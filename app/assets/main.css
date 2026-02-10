@@ -1,0 +1,12 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme static {
+  --font-sans: "Montserrat", sans-serif;
+}
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+}
