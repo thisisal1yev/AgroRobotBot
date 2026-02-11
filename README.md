@@ -1,75 +1,198 @@
-# Nuxt Minimal Starter
+```md
+# MLR Predictor
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+MLR Predictor is an AI-powered agricultural analytics platform designed to help farmers monitor fields, analyze crop health, and predict yield using data-driven insights.
 
-## Setup
+The system combines field structure management (farms, fields, seasons) with analytics and machine learning to support modern precision agriculture workflows.
 
-Make sure to install dependencies:
+---
+
+## Overview
+
+MLR Predictor provides a centralized dashboard where users can:
+
+- Manage farms and agricultural fields
+- Track seasonal crop data
+- Analyze historical and current agricultural metrics
+- Predict crop yield using AI models
+- Generate actionable recommendations based on collected data
+
+The platform focuses on building a scalable MVP using modern full-stack web technologies.
+
+---
+
+## Tech Stack
+
+### Frontend / Meta Framework
+
+- Nuxt v4
+- Vue v3
+- Nuxt UI v4
+- Tailwind CSS v4
+
+### Backend
+
+- Nuxt Server Routes (Nitro server engine)
+- TypeScript
+
+### Database
+
+- PostgreSQL
+- Prisma ORM
+
+### Authentication
+
+- Custom auth middleware
+
+---
+
+## Core Concepts
+
+### Farms
+
+Represents a physical agricultural location owned by a user.
+
+### Fields
+
+Subdivisions of farms that contain crop-specific information such as area and crop type.
+
+### Seasons
+
+Defines agricultural periods (year + crop) linked to a specific field.
+
+---
+
+## Features (MVP)
+
+- Authentication-protected dashboard
+- Farm management
+- Field management
+- Season tracking
+- Dashboard statistics
+- Recent seasons table
+- API-driven data fetching
+- Prisma-based database models
+
+---
+
+## Project Structure (Simplified)
+
+```
+
+.
+├── components/
+├── pages/
+│   └── dashboard/
+├── server/
+│   ├── api/
+│   └── middleware/
+├── prisma/
+│   ├── schema.prisma
+│   └── seed.ts
+├── layouts/
+├── middleware/
+└── nuxt.config.ts
+
+````
+
+---
+
+## Installation
+
+### 1. Clone repository
 
 ```bash
-# npm
-npm install
+git clone <repository-url>
+cd mlr-predictor
+````
 
-# pnpm
+### 2. Install dependencies
+
+```bash
 pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
+(or npm/yarn depending on your setup)
 
-Start the development server on `http://localhost:3000`:
+### 3. Environment variables
+
+Create `.env` file:
+
+```
+DATABASE_URL="postgresql://user:password@localhost:5432/mlr_predictor"
+```
+
+---
+
+### 4. Prisma setup
+
+Run migrations:
 
 ```bash
-# npm
-npm run dev
+npx prisma migrate dev
+```
 
-# pnpm
+Generate Prisma client:
+
+```bash
+npx prisma generate
+```
+
+---
+
+### 5. Seed database
+
+```bash
+tsx prisma/seed.ts
+```
+
+Options:
+
+```
+--down        Clear database
+--seed-only   Seed without cleaning
+```
+
+---
+
+### 6. Run development server
+
+```bash
 pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+Application will be available at:
 
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+```
+http://localhost:3000
 ```
 
-Locally preview production build:
+---
 
-```bash
-# npm
-npm run preview
+## API (Example Endpoints)
 
-# pnpm
-pnpm preview
+* `/api/dashboard/stats`
+* `/api/farms`
+* `/api/fields`
+* `/api/seasons`
 
-# yarn
-yarn preview
+---
 
-# bun
-bun run preview
-```
+## Design Goals
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+* Clean architecture aligned with Nuxt ecosystem
+* Server-driven data flow using Nuxt server routes
+* Fast MVP development using Nuxt UI
+* Scalable database design with Prisma
+* Type-safe fullstack development
+
+---
+
+## Future Roadmap
+
+* NDVI/EVI data integration
+* AI-based yield prediction engine
+* Drone imagery processing
+* Recommendation system for fertilizers and crop management
+* Alerts and notifications
+* Role-based access control
