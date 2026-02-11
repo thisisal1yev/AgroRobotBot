@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { NavigationMenuItem } from "@nuxt/ui";
+
 const colorMode = useColorMode();
 
 const nav = [
@@ -18,6 +20,13 @@ const navItems = computed(() =>
 const toggleTheme = () => {
   colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
 };
+
+const NAV_LINKS_MOBILE = computed<NavigationMenuItem[]>(() => [
+  { label: "Features", href: "#features" },
+  { label: "How it works", href: "#how-it-works" },
+  { label: "Use cases", href: "#use-cases" },
+  { label: "FAQ", href: "#faq" },
+]);
 </script>
 
 <template>
@@ -44,10 +53,16 @@ const toggleTheme = () => {
           />
         </UButton>
 
-        <UButton color="primary" to="#contact" icon="i-lucide-send">
-          Request demo
-        </UButton>
+        <UButton color="primary" to="/auth"> Login </UButton>
       </div>
+    </template>
+
+    <template #body>
+      <UNavigationMenu
+        :items="NAV_LINKS_MOBILE"
+        orientation="vertical"
+        class="-mx-2.5"
+      />
     </template>
   </UHeader>
 </template>

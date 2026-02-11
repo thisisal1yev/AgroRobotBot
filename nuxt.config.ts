@@ -20,5 +20,11 @@ export default defineNuxtConfig({
     processCSSVariables: true,
   },
 
-  modules: ["@nuxt/image", "@nuxt/fonts", "@nuxt/icon", "@nuxt/ui"],
+  modules: [
+    "@nuxt/image",
+    "@nuxt/fonts",
+    "@nuxt/icon",
+    "@nuxt/ui",
+    "nuxt-auth-utils",
+  ],
 });

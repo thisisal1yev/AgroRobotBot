@@ -72,30 +72,6 @@ Defines agricultural periods (year + crop) linked to a specific field.
 - API-driven data fetching
 - Prisma-based database models
 
----
-
-## Project Structure (Simplified)
-
-```
-
-.
-├── components/
-├── pages/
-│   └── dashboard/
-├── server/
-│   ├── api/
-│   └── middleware/
-├── prisma/
-│   ├── schema.prisma
-│   └── seed.ts
-├── layouts/
-├── middleware/
-└── nuxt.config.ts
-
-````
-
----
-
 ## Installation
 
 ### 1. Clone repository
