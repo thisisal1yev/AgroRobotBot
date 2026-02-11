@@ -1,4 +1,3 @@
-```md
 # MLR Predictor
 
 MLR Predictor is an AI-powered agricultural analytics platform designed to help farmers monitor fields, analyze crop health, and predict yield using data-driven insights.
