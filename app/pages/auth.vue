@@ -124,11 +124,16 @@ const handleLogin = async (payload: FormSubmitEvent<LoginPayload>) => {
   error.value = null;
 
   try {
+    await $fetch("/api/auth/login", {
+      method: "POST",
+      body: { email, password },
+    });
+
     await navigateTo("/dashboard");
   } catch (e: any) {
     error.value =
-      e?.statusMessage ||
       e?.data?.message ||
+      e?.statusMessage ||
       "Sign in failed. Please try again.";
   } finally {
     isLoading.value = false;
@@ -153,9 +158,19 @@ const handleRegister = async (payload: FormSubmitEvent<RegisterPayload>) => {
 
     toast.add({
       title: "Account created",
-      description: "You can sign in now.",
+      description: "Redirecting to sign in...",
     });
-    activeTab.value = "login";
+
+    // Auto login after registration
+    try {
+      await $fetch("/api/auth/login", {
+        method: "POST",
+        body: { email, password },
+      });
+      await navigateTo("/dashboard");
+    } catch {
+      activeTab.value = "login";
+    }
   } catch (e: any) {
     error.value =
       e?.statusMessage ||
@@ -180,7 +195,7 @@ watch(activeTab, () => {
         >
           <UIcon name="i-lucide-leaf" size="xl" class="text-primary text-3xl" />
         </div>
-        <p class="mt-3 text-sm text-gray-500">MLR Predictor</p>
+        <p class="mt-3 text-sm text-gray-500">AgroRobotBot</p>
       </NuxtLink>
     </div>
 
