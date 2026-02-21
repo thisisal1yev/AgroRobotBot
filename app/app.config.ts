@@ -5,4 +5,8 @@ export default defineAppConfig({
       neutral: "gray",
     },
   },
+
+  icon: {
+    size: "18px",
+  },
 });

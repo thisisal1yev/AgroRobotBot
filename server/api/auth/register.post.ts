@@ -1,39 +1,40 @@
-import argon2 from 'argon2'
+import { hashSync } from "bcrypt";
+import { prisma } from "~~/prisma/db";
 
-export default defineEventHandler(async event => {
-	const body = await readBody(event)
+export default defineEventHandler(async (event) => {
+  const body = await readBody(event);
 
-	if (!body.email || !body.password || !body.name) {
-		throw createError({
-			statusCode: 400,
-			message: 'Email, password and name are required'
-		})
-	}
+  if (!body.email || !body.password || !body.name) {
+    throw createError({
+      statusCode: 400,
+      message: "Email, password and name are required",
+    });
+  }
 
-	const existingUser = await prisma.user.findUnique({
-		where: { email: body.email }
-	})
+  const existingUser = await prisma.user.findUnique({
+    where: { email: body.email },
+  });
 
-	if (existingUser) {
-		throw createError({
-			statusCode: 400,
-			message: 'User already exists'
-		})
-	}
+  if (existingUser) {
+    throw createError({
+      statusCode: 400,
+      message: "User already exists",
+    });
+  }
 
-	const password = await argon2.hash(body.password)
+  const password = hashSync(body.password, 10);
 
-	const user = await prisma.user.create({
-		data: {
-			email: body.email,
-			name: body.name,
-			password
-		}
-	})
+  const user = await prisma.user.create({
+    data: {
+      email: body.email,
+      name: body.name,
+      password,
+    },
+  });
 
-	return {
-		id: user.id,
-		email: user.email,
-		name: user.name
-	}
-})
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+  };
+});

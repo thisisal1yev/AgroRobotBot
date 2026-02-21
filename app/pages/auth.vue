@@ -25,11 +25,15 @@ const error = ref<string | null>(null);
  *
  * If in your project names differ, just replace accordingly.
  */
-const { loggedIn } = useUserSession();
+const { loggedIn, user } = useUserSession();
+
+const redirectByRole = (role?: string) => {
+  return role === "ADMIN" ? "/admin" : "/farmer";
+};
 
 watchEffect(() => {
-  if (loggedIn.value) {
-    router.push("/dashboard");
+  if (loggedIn.value && user.value) {
+    router.push(redirectByRole(user.value.role));
   }
 });
 
@@ -124,12 +128,12 @@ const handleLogin = async (payload: FormSubmitEvent<LoginPayload>) => {
   error.value = null;
 
   try {
-    await $fetch("/api/auth/login", {
+    const res = await $fetch<{ role: string }>("/api/auth/login", {
       method: "POST",
       body: { email, password },
     });
 
-    await navigateTo("/dashboard");
+    await navigateTo(redirectByRole(res.role));
   } catch (e: any) {
     error.value =
       e?.data?.message ||
@@ -163,11 +167,11 @@ const handleRegister = async (payload: FormSubmitEvent<RegisterPayload>) => {
 
     // Auto login after registration
     try {
-      await $fetch("/api/auth/login", {
+      const res = await $fetch<{ role: string }>("/api/auth/login", {
         method: "POST",
         body: { email, password },
       });
-      await navigateTo("/dashboard");
+      await navigateTo(redirectByRole(res.role));
     } catch {
       activeTab.value = "login";
     }

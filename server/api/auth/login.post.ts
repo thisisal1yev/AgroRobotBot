@@ -1,46 +1,49 @@
-import argon2 from 'argon2'
+import { compare } from "bcrypt";
+import { prisma } from "~~/prisma/db";
 
-export default defineEventHandler(async event => {
-	const body = await readBody(event)
+export default defineEventHandler(async (event) => {
+  const body = await readBody(event);
 
-	if (!body.email || !body.password) {
-		throw createError({
-			statusCode: 400,
-			message: 'Email and password are required'
-		})
-	}
+  if (!body.email || !body.password) {
+    throw createError({
+      statusCode: 400,
+      message: "Email and password are required",
+    });
+  }
 
-	const user = await prisma.user.findUnique({
-		where: { email: body.email }
-	})
+  const user = await prisma.user.findUnique({
+    where: { email: body.email },
+  });
 
-	if (!user) {
-		throw createError({
-			statusCode: 401,
-			message: 'Invalid credentials'
-		})
-	}
+  if (!user) {
+    throw createError({
+      statusCode: 401,
+      message: "Invalid credentials",
+    });
+  }
 
-	const validPassword = await argon2.verify(user.password, body.password)
+  const validPassword = await compare(body.password, user.password);
 
-	if (!validPassword) {
-		throw createError({
-			statusCode: 401,
-			message: 'Invalid credentials'
-		})
-	}
+  if (!validPassword) {
+    throw createError({
+      statusCode: 401,
+      message: "Invalid credentials",
+    });
+  }
 
-	await setUserSession(event, {
-		user: {
-			id: user.id,
-			email: user.email,
-			name: user.name
-		}
-	})
+  await setUserSession(event, {
+    user: {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+    },
+  });
 
-	return {
-		id: user.id,
-		email: user.email,
-		name: user.name
-	}
-})
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    role: user.role,
+  };
+});

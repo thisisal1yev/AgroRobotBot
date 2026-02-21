@@ -2,6 +2,11 @@
 import type { NavigationMenuItem } from "@nuxt/ui";
 
 const colorMode = useColorMode();
+const { loggedIn, user } = useUserSession();
+
+const dashboardLink = computed(() =>
+  user.value?.role === "ADMIN" ? "/admin" : "/farmer",
+);
 
 const nav = [
   { label: "Features", href: "#features" },
@@ -53,7 +58,14 @@ const NAV_LINKS_MOBILE = computed<NavigationMenuItem[]>(() => [
           />
         </UButton>
 
-        <UButton color="primary" to="/auth"> Login </UButton>
+        <UButton
+          v-if="loggedIn"
+          color="primary"
+          :to="dashboardLink"
+          icon="i-lucide-layout-dashboard"
+          label="Dashboard"
+        />
+        <UButton v-else color="primary" to="/auth" label="Login" />
       </div>
     </template>
 

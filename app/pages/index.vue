@@ -35,6 +35,13 @@ const trustCards = [
   },
 ];
 
+const stats = [
+  { value: "98%", label: "Detection accuracy" },
+  { value: "24/7", label: "Autonomous operation" },
+  { value: "50+", label: "Supported crops" },
+  { value: "<5min", label: "Soil analysis time" },
+];
+
 const features = [
   {
     icon: "i-lucide-activity",
@@ -93,14 +100,17 @@ const how = [
 
 const useCases = [
   {
+    icon: "i-lucide-wheat",
     title: "Small & medium farms",
     body: "Reduce manual scouting and act on early warnings for irrigation, nutrients, and disease risk.",
   },
   {
+    icon: "i-lucide-sun",
     title: "Remote/off-grid areas",
     body: "Solar-powered operations, low connectivity assumptions, and field-first diagnostics.",
   },
   {
+    icon: "i-lucide-microscope",
     title: "Research & pilots",
     body: "Standardized telemetry, clean exports, and reproducible reports for trials and collaboration.",
   },
@@ -288,65 +298,108 @@ const faqs = [
       </div>
     </section>
 
+    <!-- Trust cards -->
+    <section class="border-y border-default bg-muted/50">
+      <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+        <div class="grid gap-6 sm:grid-cols-3">
+          <div
+            v-for="card in trustCards"
+            :key="card.title"
+            class="flex items-center gap-4"
+          >
+            <div class="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+              <UIcon :name="card.icon" class="size-6 text-primary" />
+            </div>
+            <div>
+              <h3 class="font-semibold">{{ card.title }}</h3>
+              <p class="text-sm text-muted">{{ card.subtitle }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+      <div class="grid grid-cols-2 gap-8 lg:grid-cols-4">
+        <div v-for="stat in stats" :key="stat.label" class="text-center">
+          <div class="text-4xl font-bold text-primary">{{ stat.value }}</div>
+          <p class="mt-2 text-sm text-muted">{{ stat.label }}</p>
+        </div>
+      </div>
+    </section>
+
     <!-- Features -->
     <section
       id="features"
-      class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20"
+      class="border-y border-default bg-muted/50"
     >
-      <div class="max-w-2xl">
-        <h2 class="text-2xl text-primary font-semibold tracking-tight sm:text-3xl">
-          Everything you need to monitor fields.
-        </h2>
+      <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+        <div class="text-center max-w-2xl mx-auto">
+          <UBadge variant="subtle" class="rounded-full" icon="i-lucide-zap">
+            Platform features
+          </UBadge>
 
-        <p class="mt-3">
-          A single platform for soil analytics, plant health, robotics
-          monitoring, and actionable recommendations.
-        </p>
-      </div>
+          <h2 class="mt-4 text-2xl font-semibold tracking-tight sm:text-3xl">
+            Everything you need to monitor fields.
+          </h2>
 
-      <div class="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        <UPageCard
-          v-for="f in features"
-          spotlight
-          :key="f.title"
-          :ui="{ body: 'p-6' }"
-        >
-          <UIcon :name="f.icon" size="18" class="text-green-600" />
-          <h3 class="mt-3 text-sm font-semibold">{{ f.title }}</h3>
-          <p class="mt-2 text-sm">{{ f.body }}</p>
-        </UPageCard>
+          <p class="mt-3 text-muted">
+            A single platform for soil analytics, plant health, robotics
+            monitoring, and actionable recommendations.
+          </p>
+        </div>
+
+        <div class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <UPageCard
+            v-for="f in features"
+            spotlight
+            :key="f.title"
+            :ui="{ body: 'p-6' }"
+          >
+            <div class="flex size-10 items-center justify-center rounded-lg bg-primary/10">
+              <UIcon :name="f.icon" class="size-5 text-primary" />
+            </div>
+            <h3 class="mt-4 font-semibold">{{ f.title }}</h3>
+            <p class="mt-2 text-sm text-muted">{{ f.body }}</p>
+          </UPageCard>
+        </div>
       </div>
     </section>
 
     <!-- How it works -->
-    <section id="how-it-works" class="border-y border-default bg-muted">
+    <section id="how-it-works">
       <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
-        <div class="max-w-2xl">
-          <h2 class="text-2xl text-primary font-semibold tracking-tight sm:text-3xl">
+        <div class="text-center max-w-2xl mx-auto">
+          <UBadge variant="subtle" class="rounded-full" icon="i-lucide-workflow">
+            Workflow
+          </UBadge>
+
+          <h2 class="mt-4 text-2xl font-semibold tracking-tight sm:text-3xl">
             How it works
           </h2>
-          <p class="mt-3">Simple pipeline from field sensors to decisions.</p>
+          <p class="mt-3 text-muted">Simple pipeline from field sensors to decisions.</p>
         </div>
 
-        <div class="mt-10 grid gap-5 lg:grid-cols-4">
-          <UCard
+        <div class="mt-12 grid gap-5 lg:grid-cols-4">
+          <UPageCard
             v-for="s in how"
+            spotlight
             :key="s.step"
-            class="rounded-3xl"
             :ui="{ body: 'p-6' }"
           >
-            <div class="flex items-center gap-2 text-sm font-semibold">
+            <div class="flex items-center gap-3">
               <span
-                class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-green-600 text-white"
+                class="inline-flex size-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-white"
               >
                 {{ s.step }}
               </span>
-              {{ s.title }}
+              <h3 class="font-semibold">{{ s.title }}</h3>
             </div>
-            <p class="mt-2 text-sm">
+            <p class="mt-3 text-sm text-muted">
               {{ s.body }}
             </p>
-          </UCard>
+          </UPageCard>
         </div>
       </div>
     </section>
@@ -354,39 +407,52 @@ const faqs = [
     <!-- Use cases -->
     <section
       id="use-cases"
-      class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20"
+      class="border-y border-default bg-muted/50"
     >
-      <div class="max-w-2xl">
-        <h2 class="text-2xl text-primary font-semibold tracking-tight sm:text-3xl">
-          Use cases
-        </h2>
-        <p class="mt-3">
-          Built for farms, research pilots, and advisory programs.
-        </p>
-      </div>
+      <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
+        <div class="text-center max-w-2xl mx-auto">
+          <UBadge variant="subtle" class="rounded-full" icon="i-lucide-target">
+            Who it's for
+          </UBadge>
 
-      <div class="mt-10 grid gap-5 lg:grid-cols-3">
-        <UCard
-          v-for="u in useCases"
-          :key="u.title"
-          class="rounded-3xl"
-          :ui="{ body: 'p-6' }"
-        >
-          <h3 class="text-sm font-semibold">{{ u.title }}</h3>
-          <p class="mt-2 text-sm">
-            {{ u.body }}
+          <h2 class="mt-4 text-2xl font-semibold tracking-tight sm:text-3xl">
+            Use cases
+          </h2>
+          <p class="mt-3 text-muted">
+            Built for farms, research pilots, and advisory programs.
           </p>
-        </UCard>
+        </div>
+
+        <div class="mt-12 grid gap-5 lg:grid-cols-3">
+          <UPageCard
+            v-for="u in useCases"
+            spotlight
+            :key="u.title"
+            :ui="{ body: 'p-6' }"
+          >
+            <div class="flex size-10 items-center justify-center rounded-lg bg-primary/10">
+              <UIcon :name="u.icon" class="size-5 text-primary" />
+            </div>
+            <h3 class="mt-4 font-semibold">{{ u.title }}</h3>
+            <p class="mt-2 text-sm text-muted">
+              {{ u.body }}
+            </p>
+          </UPageCard>
+        </div>
       </div>
     </section>
 
     <!-- CTA / Contact -->
-    <section id="contact" class="border-t border-default bg-muted">
+    <section id="contact">
       <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-20">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
           <!-- Left -->
           <div>
-            <h2 class="text-2xl text-primary font-semibold tracking-tight sm:text-3xl">
+            <UBadge variant="subtle" class="rounded-full" icon="i-lucide-rocket">
+              Get started
+            </UBadge>
+
+            <h2 class="mt-4 text-2xl font-semibold tracking-tight sm:text-3xl">
               Want to run a pilot with AgroRobotBot?
             </h2>
 
@@ -394,45 +460,63 @@ const faqs = [
               Share your farm size, crop type, and location. We will respond
               with a pilot plan and required setup.
             </p>
+
+            <div class="mt-8 space-y-4">
+              <div
+                v-for="pill in heroPills"
+                :key="pill.title"
+                class="flex items-center gap-3"
+              >
+                <div class="flex size-2 rounded-full bg-primary" />
+                <div>
+                  <span class="font-medium">{{ pill.title }}</span>
+                  <span class="text-muted"> — {{ pill.subtitle }}</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- Right: Form -->
-          <UForm class="grid gap-4 bg-default p-5 rounded-md" @submit.prevent>
-            <UFormField label="Full name">
-              <UInput class="w-full" placeholder="Jane Doe" />
-            </UFormField>
+          <UCard :ui="{ body: 'p-6 sm:p-8' }">
+            <UForm class="grid gap-5" @submit.prevent>
+              <UFormField label="Full name">
+                <UInput class="w-full" placeholder="Jane Doe" icon="i-lucide-user" />
+              </UFormField>
 
-            <UFormField label="Email">
-              <UInput class="w-full" type="email" placeholder="jane@farm.com" />
-            </UFormField>
+              <UFormField label="Email">
+                <UInput class="w-full" type="email" placeholder="jane@farm.com" icon="i-lucide-mail" />
+              </UFormField>
 
-            <UFormField label="Farm size (hectares)">
-              <UInput class="w-full" type="number" placeholder="25" />
-            </UFormField>
+              <div class="grid gap-5 sm:grid-cols-2">
+                <UFormField label="Farm size (hectares)">
+                  <UInput class="w-full" type="number" placeholder="25" icon="i-lucide-ruler" />
+                </UFormField>
 
-            <UFormField label="Crop">
-              <UInput class="w-full" placeholder="Cotton / Wheat / Tomato..." />
-            </UFormField>
+                <UFormField label="Crop">
+                  <UInput class="w-full" placeholder="Cotton / Wheat..." icon="i-lucide-wheat" />
+                </UFormField>
+              </div>
 
-            <UFormField label="Message">
-              <UTextarea
-                class="w-full"
-                :rows="4"
-                placeholder="Tell us about your field conditions and what you want to monitor."
-              />
-            </UFormField>
+              <UFormField label="Message">
+                <UTextarea
+                  class="w-full"
+                  :rows="4"
+                  placeholder="Tell us about your field conditions and what you want to monitor."
+                />
+              </UFormField>
 
-            <div class="flex items-center justify-end">
               <UButton
                 color="primary"
                 variant="solid"
                 icon="i-lucide-send"
                 type="submit"
+                size="lg"
+                block
               >
                 Send request
               </UButton>
-            </div>
-          </UForm>
+            </UForm>
+          </UCard>
         </div>
       </div>
     </section>

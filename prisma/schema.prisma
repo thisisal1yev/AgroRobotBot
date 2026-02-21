@@ -7,11 +7,222 @@ datasource db {
   provider = "postgresql"
 }
 
+// ── Enums ──────────────────────────────────────────────
+
+enum Role {
+  FARMER
+  ADMIN
+}
+
+enum SoilType {
+  CLAY
+  SANDY
+  LOAM
+  SILT
+  PEAT
+  CHALKY
+}
+
+enum SeasonStatus {
+  PLANNED
+  ACTIVE
+  COMPLETED
+}
+
+enum RobotStatus {
+  ONLINE
+  OFFLINE
+  CHARGING
+  IN_MISSION
+}
+
+enum MissionStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+}
+
+enum AlertSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum AlertStatus {
+  ACTIVE
+  RESOLVED
+}
+
+// ── Models ─────────────────────────────────────────────
+
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
   name      String?
   password  String
+  role      Role     @default(FARMER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  farms   Farm[]
+  reports Report[]
+}
+
+model Farm {
+  id        String   @id @default(cuid())
+  name      String
+  location  String
+  area      Float
+  soilType  SoilType @default(LOAM)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ownerId String
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  fields  Field[]
+  robots  Robot[]
+  seasons Season[]
+  reports Report[]
+}
+
+model Field {
+  id          String   @id @default(cuid())
+  name        String
+  area        Float
+  cropType    String
+  coordinates Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  farmId String
+  farm   Farm   @relation(fields: [farmId], references: [id], onDelete: Cascade)
+
+  telemetryReadings TelemetryReading[]
+  plantAnalyses     PlantAnalysis[]
+  alerts            Alert[]
+  recommendations   Recommendation[]
+  missions          Mission[]
+}
+
+model Robot {
+  id              String      @id @default(cuid())
+  name            String
+  serialNumber    String      @unique
+  status          RobotStatus @default(OFFLINE)
+  batteryLevel    Int         @default(100)
+  lastSeenAt      DateTime?
+  firmwareVersion String      @default("1.0.0")
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  farmId String
+  farm   Farm   @relation(fields: [farmId], references: [id], onDelete: Cascade)
+
+  missions          Mission[]
+  telemetryReadings TelemetryReading[]
+}
+
+model Mission {
+  id          String        @id @default(cuid())
+  type        String
+  status      MissionStatus @default(PENDING)
+  startedAt   DateTime?
+  completedAt DateTime?
+  notes       String?
+  createdAt   DateTime      @default(now())
+
+  robotId String
+  robot   Robot  @relation(fields: [robotId], references: [id], onDelete: Cascade)
+
+  fieldId String
+  field   Field  @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+}
+
+model TelemetryReading {
+  id          String   @id @default(cuid())
+  moisture    Float
+  ph          Float
+  nitrogen    Float
+  phosphorus  Float
+  potassium   Float
+  ec          Float
+  temperature Float
+  humidity    Float
+  recordedAt  DateTime @default(now())
+
+  fieldId String
+  field   Field  @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  robotId String
+  robot   Robot  @relation(fields: [robotId], references: [id], onDelete: Cascade)
+}
+
+model PlantAnalysis {
+  id         String   @id @default(cuid())
+  imageUrl   String
+  disease    String?
+  confidence Float
+  healthy    Boolean  @default(true)
+  createdAt  DateTime @default(now())
+
+  fieldId String
+  field   Field  @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+}
+
+model Alert {
+  id         String        @id @default(cuid())
+  title      String
+  message    String
+  severity   AlertSeverity @default(MEDIUM)
+  status     AlertStatus   @default(ACTIVE)
+  resolvedAt DateTime?
+  createdAt  DateTime      @default(now())
+
+  fieldId String
+  field   Field  @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+}
+
+model Recommendation {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  category    String
+  priority    Int      @default(1)
+  applied     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  fieldId String
+  field   Field  @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+}
+
+model Season {
+  id        String       @id @default(cuid())
+  name      String
+  year      Int
+  cropType  String
+  status    SeasonStatus @default(PLANNED)
+  startDate DateTime
+  endDate   DateTime?
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  farmId String
+  farm   Farm   @relation(fields: [farmId], references: [id], onDelete: Cascade)
+}
+
+model Report {
+  id          String   @id @default(cuid())
+  title       String
+  type        String
+  fileUrl     String?
+  generatedAt DateTime @default(now())
+
+  farmId String
+  farm   Farm   @relation(fields: [farmId], references: [id], onDelete: Cascade)
+
+  generatedById String
+  generatedBy   User   @relation(fields: [generatedById], references: [id], onDelete: Cascade)
 }

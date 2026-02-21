@@ -1,11 +1,13 @@
+import { prisma } from "~~/prisma/db";
+
 export default defineEventHandler(async (event) => {
-  const session = await getUserSession(event)
+  const session = await getUserSession(event);
 
   if (!session.user) {
     throw createError({
       statusCode: 401,
-      message: 'Not authenticated',
-    })
+      message: "Not authenticated",
+    });
   }
 
   const user = await prisma.user.findUnique({
@@ -14,16 +16,17 @@ export default defineEventHandler(async (event) => {
       id: true,
       email: true,
       name: true,
+      role: true,
       createdAt: true,
     },
-  })
+  });
 
   if (!user) {
     throw createError({
       statusCode: 401,
-      message: 'User not found',
-    })
+      message: "User not found",
+    });
   }
 
-  return user
-})
+  return user;
+});
