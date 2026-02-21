@@ -12,6 +12,10 @@ const { data: farms, status } = await useFetch("/api/farms", {
 
 type Farm = NonNullable<typeof farms.value>[number]
 
+function viewFarm(farm: Farm) {
+  navigateTo(`/farmer/farms/${farm.id}`)
+}
+
 const deleteSingleMessage = (f: Farm) => `Are you sure you want to delete "${f.name}"?`
 const deleteBulkMessage = (n: number) => `Are you sure you want to delete ${n} farms?`
 
@@ -70,6 +74,7 @@ const columns: TableColumn<Farm>[] = [
         :delete-single-message="deleteSingleMessage"
         :delete-bulk-message="deleteBulkMessage"
         hide-delete-btn
+        @row-click="viewFarm"
       />
     </template>
   </UDashboardPanel>

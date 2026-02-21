@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   label: string;
   value: number | string;
   icon: string;
@@ -7,10 +7,12 @@ defineProps<{
   bg: string;
   to?: string;
 }>();
+
+const NuxtLink = resolveComponent('NuxtLink')
 </script>
 
 <template>
-  <component :is="to ? resolveComponent('NuxtLink') : 'div'" :to="to" class="block">
+  <component :is="to ? NuxtLink : 'div'" :to="to" class="block">
     <UCard :class="to && 'hover:ring-primary/50 hover:ring-1 transition-all cursor-pointer'">
       <div class="flex items-center justify-between">
         <div>
