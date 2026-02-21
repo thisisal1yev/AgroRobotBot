@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { TableColumn } from '@nuxt/ui'
+
 definePageMeta({
   layout: "admin",
   middleware: ["auth"],
@@ -8,12 +10,46 @@ const { data: farms, status } = await useFetch("/api/farms", {
   server: false,
 });
 
-const formatDate = (date: string) =>
-  new Date(date).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
+type Farm = NonNullable<typeof farms.value>[number]
+
+const deleteSingleMessage = (f: Farm) => `Are you sure you want to delete "${f.name}"?`
+const deleteBulkMessage = (n: number) => `Are you sure you want to delete ${n} farms?`
+
+const columns: TableColumn<Farm>[] = [
+  {
+    accessorKey: 'name',
+    header: 'Name',
+  },
+  {
+    accessorKey: 'location',
+    header: 'Location',
+    cell: ({ row }) => row.original.location || 'No location'
+  },
+  {
+    id: 'owner',
+    header: 'Owner',
+    cell: ({ row }) => row.original.owner?.name || 'Unknown'
+  },
+  {
+    accessorKey: 'area',
+    header: 'Area',
+    cell: ({ row }) => `${row.original.area} ha`
+  },
+  {
+    accessorKey: 'soilType',
+    header: 'Soil Type',
+  },
+  {
+    id: 'fields',
+    header: 'Fields',
+    cell: ({ row }) => row.original._count.fields
+  },
+  {
+    id: 'robots',
+    header: 'Robots',
+    cell: ({ row }) => row.original._count.robots
+  },
+]
 </script>
 
 <template>
@@ -27,44 +63,19 @@ const formatDate = (date: string) =>
     </template>
 
     <template #body>
-      <div v-if="status === 'pending'" class="flex justify-center py-12">
-        <UIcon name="i-lucide-loader-circle" class="size-8 animate-spin text-muted" />
-      </div>
-
-      <div v-else-if="!farms?.length" class="text-center py-12">
-        <UIcon name="i-lucide-tractor" class="size-12 text-muted mx-auto mb-2" />
-        <p class="text-sm text-muted">No farms found</p>
-      </div>
-
-      <div v-else class="grid gap-3">
-        <UCard v-for="farm in farms" :key="farm.id">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3 flex-1 min-w-0">
-              <div class="flex size-10 items-center justify-center rounded-full bg-green-500/10">
-                <UIcon name="i-lucide-tractor" class="size-5 text-green-500" />
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="font-medium text-highlighted truncate">{{ farm.name }}</p>
-                <p class="text-sm text-muted truncate">{{ farm.location || "No location" }}</p>
-              </div>
-            </div>
-            <div class="flex items-center gap-4 ml-4">
-              <div class="text-right text-xs text-muted space-y-0.5">
-                <p>Owner: {{ farm.owner?.name || "Unknown" }}</p>
-                <p>{{ farm.area }} ha &middot; {{ farm.soilType }}</p>
-              </div>
-              <div class="flex gap-2">
-                <UBadge variant="subtle" size="xs" color="info">
-                  {{ farm._count.fields }} field{{ farm._count.fields !== 1 ? "s" : "" }}
-                </UBadge>
-                <UBadge variant="subtle" size="xs" color="neutral">
-                  {{ farm._count.robots }} robot{{ farm._count.robots !== 1 ? "s" : "" }}
-                </UBadge>
-              </div>
-            </div>
-          </div>
-        </UCard>
-      </div>
+      <DataTable
+        :data="farms ?? []"
+        :columns="columns"
+        :loading="status === 'pending'"
+        search-key="name"
+        search-placeholder="Search farms..."
+        empty-icon="i-lucide-tractor"
+        empty-text="No farms found"
+        delete-title="Delete Farms"
+        :delete-single-message="deleteSingleMessage"
+        :delete-bulk-message="deleteBulkMessage"
+        hide-delete-btn
+      />
     </template>
   </UDashboardPanel>
 </template>

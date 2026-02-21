@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { TableColumn } from '@nuxt/ui'
+
 definePageMeta({
   layout: "admin",
   middleware: ["auth"],
@@ -8,20 +10,42 @@ const { data: users, status } = await useFetch("/api/admin/users", {
   server: false,
 });
 
-const columns = [
-  { key: "name", label: "Name" },
-  { key: "email", label: "Email" },
-  { key: "role", label: "Role" },
-  { key: "farms", label: "Farms" },
-  { key: "createdAt", label: "Joined" },
-];
+type User = NonNullable<typeof users.value>[number]
 
-const formatDate = (date: string) =>
-  new Date(date).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
+const deleteSingleMessage = (u: User) => `Are you sure you want to delete "${u.name || u.email}"?`
+const deleteBulkMessage = (n: number) => `Are you sure you want to delete ${n} users?`
+
+const columns: TableColumn<User>[] = [
+  {
+    accessorKey: 'name',
+    header: 'Name',
+    cell: ({ row }) => row.original.name || 'Unnamed'
+  },
+  {
+    accessorKey: 'email',
+    header: 'Email',
+  },
+  {
+    accessorKey: 'role',
+    header: 'Role',
+    cell: ({ row }) => h(resolveComponent('UBadge'), {
+      color: row.original.role === 'ADMIN' ? 'error' : 'success',
+      variant: 'subtle',
+      size: 'xs',
+      label: row.original.role
+    })
+  },
+  {
+    accessorKey: 'createdAt',
+    header: 'Created',
+    cell: ({ row }) => formatDate(row.original.createdAt)
+  },
+  {
+    id: 'farms',
+    header: 'Farms',
+    cell: ({ row }) => row.original._count.farms
+  },
+]
 </script>
 
 <template>
@@ -35,48 +59,19 @@ const formatDate = (date: string) =>
     </template>
 
     <template #body>
-      <div v-if="status === 'pending'" class="flex justify-center py-12">
-        <UIcon name="i-lucide-loader-circle" class="size-8 animate-spin text-muted" />
-      </div>
-
-      <div v-else-if="!users?.length" class="text-center py-12">
-        <UIcon name="i-lucide-user-x" class="size-12 text-muted mx-auto mb-2" />
-        <p class="text-sm text-muted">No users found</p>
-      </div>
-
-      <div v-else class="space-y-4">
-        <div class="grid gap-3">
-          <UCard v-for="u in users" :key="u.id">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-3 flex-1 min-w-0">
-                <div class="flex size-10 items-center justify-center rounded-full bg-primary/10">
-                  <UIcon name="i-lucide-user" class="size-5 text-primary" />
-                </div>
-                <div class="flex-1 min-w-0">
-                  <p class="font-medium text-highlighted truncate">
-                    {{ u.name || "Unnamed" }}
-                  </p>
-                  <p class="text-sm text-muted truncate">{{ u.email }}</p>
-                </div>
-              </div>
-              <div class="flex items-center gap-3 ml-4">
-                <UBadge
-                  :color="u.role === 'ADMIN' ? 'error' : 'success'"
-                  variant="subtle"
-                  size="xs"
-                  :label="u.role"
-                />
-                <div class="text-right">
-                  <p class="text-xs text-muted">{{ formatDate(u.createdAt) }}</p>
-                  <p class="text-xs text-muted">
-                    {{ u._count.farms }} farm{{ u._count.farms !== 1 ? "s" : "" }}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </UCard>
-        </div>
-      </div>
+      <DataTable
+        :data="users ?? []"
+        :columns="columns"
+        :loading="status === 'pending'"
+        search-key="name"
+        search-placeholder="Search users..."
+        empty-icon="i-lucide-user-x"
+        empty-text="No users found"
+        delete-title="Delete Users"
+        :delete-single-message="deleteSingleMessage"
+        :delete-bulk-message="deleteBulkMessage"
+        hide-delete-btn
+      />
     </template>
   </UDashboardPanel>
 </template>

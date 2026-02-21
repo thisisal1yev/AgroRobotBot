@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { NavigationMenuItem } from "@nuxt/ui";
+import { LANDING_NAV } from "~/constants/navigation";
 
 const colorMode = useColorMode();
 const { loggedIn, user } = useUserSession();
@@ -8,30 +8,13 @@ const dashboardLink = computed(() =>
   user.value?.role === "ADMIN" ? "/admin" : "/farmer",
 );
 
-const nav = [
-  { label: "Features", href: "#features" },
-  { label: "How it works", href: "#how-it-works" },
-  { label: "Use cases", href: "#use-cases" },
-  { label: "FAQ", href: "#faq" },
-];
-
 const navItems = computed(() =>
-  nav.map((x) => ({
-    label: x.label,
-    to: x.href,
-  })),
+  LANDING_NAV.map((x) => ({ label: x.label, to: x.href })),
 );
 
 const toggleTheme = () => {
   colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
 };
-
-const NAV_LINKS_MOBILE = computed<NavigationMenuItem[]>(() => [
-  { label: "Features", href: "#features" },
-  { label: "How it works", href: "#how-it-works" },
-  { label: "Use cases", href: "#use-cases" },
-  { label: "FAQ", href: "#faq" },
-]);
 </script>
 
 <template>
@@ -71,7 +54,7 @@ const NAV_LINKS_MOBILE = computed<NavigationMenuItem[]>(() => [
 
     <template #body>
       <UNavigationMenu
-        :items="NAV_LINKS_MOBILE"
+        :items="navItems"
         orientation="vertical"
         class="-mx-2.5"
       />

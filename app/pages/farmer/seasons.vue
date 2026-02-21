@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { TableColumn } from '@nuxt/ui'
+
 definePageMeta({
   layout: "farmer",
   middleware: ["auth"],
@@ -8,18 +10,45 @@ const { data: seasons, status } = await useFetch("/api/seasons", {
   server: false,
 });
 
-function statusColor(s: string) {
-  if (s === "ACTIVE") return "success";
-  if (s === "PLANNED") return "info";
-  return "neutral";
-}
+type Season = NonNullable<typeof seasons.value>[number]
 
-const formatDate = (date: string) =>
-  new Date(date).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
+const deleteSingleMessage = (s: Season) => `Are you sure you want to delete "${s.name}"?`
+const deleteBulkMessage = (n: number) => `Are you sure you want to delete ${n} seasons?`
+
+const columns: TableColumn<Season>[] = [
+  {
+    accessorKey: 'name',
+    header: 'Name',
+  },
+  {
+    id: 'farm',
+    header: 'Farm',
+    cell: ({ row }) => row.original.farm?.name || '\u2014'
+  },
+  {
+    accessorKey: 'cropType',
+    header: 'Crop Type',
+  },
+  {
+    accessorKey: 'year',
+    header: 'Year',
+  },
+  {
+    accessorKey: 'status',
+    header: 'Status',
+    cell: ({ row }) => h(resolveComponent('UBadge'), {
+      color: seasonStatusColor(row.original.status),
+      variant: 'subtle',
+      size: 'xs',
+      label: row.original.status
+    })
+  },
+  {
+    accessorKey: 'startDate',
+    header: 'Start Date',
+    cell: ({ row }) => formatDate(row.original.startDate)
+  },
+]
 </script>
 
 <template>
@@ -33,38 +62,19 @@ const formatDate = (date: string) =>
     </template>
 
     <template #body>
-      <div v-if="status === 'pending'" class="flex justify-center py-12">
-        <UIcon name="i-lucide-loader-circle" class="size-8 animate-spin text-muted" />
-      </div>
-
-      <div v-else-if="!seasons?.length" class="text-center py-12">
-        <UIcon name="i-lucide-calendar" class="size-12 text-muted mx-auto mb-2" />
-        <p class="text-sm text-muted">No seasons yet</p>
-      </div>
-
-      <div v-else class="grid gap-3">
-        <UCard v-for="season in seasons" :key="season.id">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3 flex-1 min-w-0">
-              <div class="flex size-10 items-center justify-center rounded-full bg-green-500/10">
-                <UIcon name="i-lucide-calendar" class="size-5 text-green-500" />
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="font-medium text-highlighted truncate">{{ season.name }}</p>
-                <p class="text-sm text-muted truncate">
-                  {{ season.farm?.name }} &middot; {{ season.cropType }}
-                </p>
-              </div>
-            </div>
-            <div class="flex items-center gap-2 ml-4">
-              <UBadge :color="statusColor(season.status)" variant="subtle" size="xs" :label="season.status" />
-              <span class="text-xs text-muted">
-                {{ season.year }} &middot; {{ formatDate(season.startDate) }}
-              </span>
-            </div>
-          </div>
-        </UCard>
-      </div>
+      <DataTable
+        :data="seasons ?? []"
+        :columns="columns"
+        :loading="status === 'pending'"
+        search-key="name"
+        search-placeholder="Search seasons..."
+        empty-icon="i-lucide-calendar"
+        empty-text="No seasons yet"
+        delete-title="Delete Seasons"
+        :delete-single-message="deleteSingleMessage"
+        :delete-bulk-message="deleteBulkMessage"
+        hide-delete-btn
+      />
     </template>
   </UDashboardPanel>
 </template>

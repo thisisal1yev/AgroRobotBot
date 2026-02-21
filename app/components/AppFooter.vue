@@ -1,10 +1,12 @@
 <script lang="ts" setup>
-const nav = [
-  { label: "Features", href: "#features" },
-  { label: "How it works", href: "#how-it-works" },
-  { label: "Use cases", href: "#use-cases" },
-  { label: "FAQ", href: "#faq" },
-];
+import { LANDING_NAV } from "~/constants/navigation";
+
+const footerNav = computed(() =>
+  [...LANDING_NAV, { label: "Contact", href: "#contact" }].map((x) => ({
+    label: x.label,
+    to: x.href,
+  })),
+);
 </script>
 
 <template>
@@ -20,14 +22,7 @@ const nav = [
     </template>
 
     <template #right>
-      <UNavigationMenu
-        :items="
-          nav
-            .concat([{ label: 'Contact', href: '#contact' }])
-            .map((x) => ({ label: x.label, to: x.href }))
-        "
-        class="text-sm"
-      />
+      <UNavigationMenu :items="footerNav" class="text-sm" />
     </template>
   </UFooter>
 </template>

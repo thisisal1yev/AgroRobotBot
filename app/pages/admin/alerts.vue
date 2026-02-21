@@ -1,31 +1,67 @@
 <script setup lang="ts">
+import type { TableColumn } from '@nuxt/ui'
+
 definePageMeta({
   layout: "admin",
   middleware: ["auth"],
 });
 
-const activeFilter = ref<string>("ALL");
+const activeFilter = ref("ALL");
 const { data: alerts, status } = await useFetch("/api/alerts", {
   server: false,
 });
+
+type Alert = NonNullable<typeof alerts.value>[number]
 
 const filteredAlerts = computed(() => {
   if (activeFilter.value === "ALL") return alerts.value ?? [];
   return (alerts.value ?? []).filter((a) => a.status === activeFilter.value);
 });
 
-function severityColor(severity: string) {
-  if (severity === "CRITICAL" || severity === "HIGH") return "error";
-  if (severity === "MEDIUM") return "warning";
-  return "info";
-}
+const deleteSingleMessage = (a: Alert) => `Are you sure you want to delete alert "${a.title}"?`
+const deleteBulkMessage = (n: number) => `Are you sure you want to delete ${n} alerts?`
 
-const formatDate = (date: string) =>
-  new Date(date).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
+const columns: TableColumn<Alert>[] = [
+  {
+    accessorKey: 'title',
+    header: 'Title',
+  },
+  {
+    id: 'field',
+    header: 'Field',
+    cell: ({ row }) => row.original.field.name
+  },
+  {
+    id: 'farm',
+    header: 'Farm',
+    cell: ({ row }) => row.original.field.farm.name
+  },
+  {
+    accessorKey: 'severity',
+    header: 'Severity',
+    cell: ({ row }) => h(resolveComponent('UBadge'), {
+      color: severityColor(row.original.severity),
+      variant: 'subtle',
+      size: 'xs',
+      label: row.original.severity
+    })
+  },
+  {
+    accessorKey: 'status',
+    header: 'Status',
+    cell: ({ row }) => h(resolveComponent('UBadge'), {
+      color: row.original.status === 'ACTIVE' ? 'error' : 'success',
+      variant: 'subtle',
+      size: 'xs',
+      label: row.original.status
+    })
+  },
+  {
+    accessorKey: 'createdAt',
+    header: 'Date',
+    cell: ({ row }) => formatDate(row.original.createdAt)
+  },
+]
 </script>
 
 <template>
@@ -37,71 +73,26 @@ const formatDate = (date: string) =>
         </template>
 
         <template #right>
-          <div class="flex gap-2">
-            <UButton
-              v-for="f in ['ALL', 'ACTIVE', 'RESOLVED']"
-              :key="f"
-              size="xs"
-              :variant="activeFilter === f ? 'solid' : 'ghost'"
-              :color="activeFilter === f ? 'primary' : 'neutral'"
-              :label="f"
-              @click="activeFilter = f"
-            />
-          </div>
+          <FilterBar v-model="activeFilter" :options="['ALL', 'ACTIVE', 'RESOLVED']" />
         </template>
       </UDashboardNavbar>
     </template>
 
     <template #body>
-      <div v-if="status === 'pending'" class="flex justify-center py-12">
-        <UIcon name="i-lucide-loader-circle" class="size-8 animate-spin text-muted" />
-      </div>
-
-      <div v-else-if="!filteredAlerts.length" class="text-center py-12">
-        <UIcon name="i-lucide-check-circle" class="size-12 text-success mx-auto mb-2" />
-        <p class="text-sm text-muted">No alerts</p>
-      </div>
-
-      <div v-else class="grid gap-3">
-        <UCard v-for="alert in filteredAlerts" :key="alert.id">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3 flex-1 min-w-0">
-              <div
-                :class="[
-                  'flex size-10 items-center justify-center rounded-full',
-                  `bg-${severityColor(alert.severity)}/10`,
-                ]"
-              >
-                <UIcon
-                  name="i-lucide-triangle-alert"
-                  :class="['size-5', `text-${severityColor(alert.severity)}`]"
-                />
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="font-medium text-highlighted truncate">{{ alert.title }}</p>
-                <p class="text-sm text-muted truncate">
-                  {{ alert.field.name }} &mdash; {{ alert.field.farm.name }}
-                </p>
-              </div>
-            </div>
-            <div class="flex items-center gap-2 ml-4">
-              <UBadge
-                :color="severityColor(alert.severity)"
-                variant="subtle"
-                size="xs"
-                :label="alert.severity"
-              />
-              <UBadge
-                :color="alert.status === 'ACTIVE' ? 'error' : 'success'"
-                variant="subtle"
-                size="xs"
-                :label="alert.status"
-              />
-              <span class="text-xs text-muted">{{ formatDate(alert.createdAt) }}</span>
-            </div>
-          </div>
-        </UCard>
-      </div>
+      <DataTable
+        :data="filteredAlerts"
+        :columns="columns"
+        :loading="status === 'pending'"
+        search-key="title"
+        search-placeholder="Search alerts..."
+        empty-icon="i-lucide-check-circle"
+        empty-text="No alerts"
+        name-key="title"
+        delete-title="Delete Alerts"
+        :delete-single-message="deleteSingleMessage"
+        :delete-bulk-message="deleteBulkMessage"
+        hide-delete-btn
+      />
     </template>
   </UDashboardPanel>
 </template>

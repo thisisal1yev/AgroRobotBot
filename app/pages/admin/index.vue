@@ -8,21 +8,9 @@ definePageMeta({
 
 const items = computed<DropdownMenuItem[][]>(() => [
   [
-    {
-      label: "Add User",
-      icon: "i-lucide-user-plus",
-      to: "/admin/users",
-    },
-    {
-      label: "Add Farm",
-      icon: "i-lucide-tractor",
-      to: "/admin/farms",
-    },
-    {
-      label: "Add Field",
-      icon: "i-lucide-map-pin",
-      to: "/admin/fields",
-    },
+    { label: "Add User", icon: "i-lucide-user-plus", to: "/admin/users" },
+    { label: "Add Farm", icon: "i-lucide-tractor", to: "/admin/farms" },
+    { label: "Add Field", icon: "i-lucide-map-pin", to: "/admin/fields" },
   ],
 ]);
 
@@ -92,19 +80,6 @@ const secondaryStats = computed(() => [
 
 const recentUsers = computed(() => (users.value ?? []).slice(0, 5));
 const activeAlerts = computed(() => (alerts.value ?? []).slice(0, 5));
-
-const formatDate = (date: string) =>
-  new Date(date).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-
-function severityColor(severity: string) {
-  if (severity === "CRITICAL" || severity === "HIGH") return "error";
-  if (severity === "MEDIUM") return "warning";
-  return "info";
-}
 </script>
 
 <template>
@@ -139,33 +114,11 @@ function severityColor(severity: string) {
       <section class="space-y-6">
         <!-- Primary stats -->
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <NuxtLink
+          <StatCard
             v-for="card in statCards"
             :key="card.label"
-            :to="card.to"
-            class="block"
-          >
-            <UCard
-              class="hover:ring-primary/50 hover:ring-1 transition-all cursor-pointer"
-            >
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-sm text-muted">{{ card.label }}</p>
-                  <div class="text-3xl font-bold text-highlighted mt-1">
-                    {{ card.value }}
-                  </div>
-                </div>
-                <div
-                  :class="[
-                    'flex size-12 items-center justify-center rounded-xl',
-                    card.bg,
-                  ]"
-                >
-                  <UIcon :name="card.icon" :class="['size-6', card.color]" />
-                </div>
-              </div>
-            </UCard>
-          </NuxtLink>
+            v-bind="card"
+          />
         </div>
 
         <!-- Secondary stats -->
@@ -270,7 +223,7 @@ function severityColor(severity: string) {
                       {{ formatDate(u.createdAt) }}
                     </p>
                     <p class="text-xs text-muted">
-                      {{ u._count.farms }} farm{{ u._count.farms !== 1 ? "s" : "" }}
+                      {{ pluralize(u._count.farms, "farm") }}
                     </p>
                   </div>
                 </div>

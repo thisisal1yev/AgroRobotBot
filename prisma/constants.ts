@@ -7,7 +7,7 @@ export const USERS = [
   },
   {
     email: 'farmer@agrobot.com',
-    name: 'Aliyev Jasur',
+    name: 'Jasur',
     password: 'password123',
     role: 'FARMER' as const,
   },
