@@ -12,20 +12,12 @@ definePageMeta({
 
 const toast = useToast();
 const router = useRouter();
+const { loggedIn, user } = useUserSession();
 
 const activeTab = ref<"login" | "register">("login");
 const isLoading = ref(false);
 const error = ref<string | null>(null);
 
-/**
- * nuxt-auth-utils composables usually provide:
- * - useUserSession()
- * - signIn()
- * - signOut()
- *
- * If in your project names differ, just replace accordingly.
- */
-const { loggedIn, user } = useUserSession();
 
 const redirectByRole = (role?: string) => {
   return role === "ADMIN" ? "/admin" : "/farmer";
@@ -165,7 +157,6 @@ const handleRegister = async (payload: FormSubmitEvent<RegisterPayload>) => {
       description: "Redirecting to sign in...",
     });
 
-    // Auto login after registration
     try {
       const res = await $fetch<{ role: string }>("/api/auth/login", {
         method: "POST",
@@ -199,7 +190,7 @@ watch(activeTab, () => {
         >
           <UIcon name="i-lucide-leaf" size="xl" class="text-primary text-3xl" />
         </div>
-        <p class="mt-3 text-sm text-gray-500">AgroRobotBot</p>
+        <p class="mt-3 text-sm text-gray-500">AgroDoctorBot</p>
       </NuxtLink>
     </div>
 

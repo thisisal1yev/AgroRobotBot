@@ -1,6 +1,6 @@
-# MLR Predictor
+# AgroDoctorBot
 
-MLR Predictor is an AI-powered agricultural analytics platform designed to help farmers monitor fields, analyze crop health, and predict yield using data-driven insights.
+AgroDoctorBot is an AI-powered agricultural analytics platform designed to help farmers monitor fields, analyze crop health, and predict yield using data-driven insights.
 
 The system combines field structure management (farms, fields, seasons) with analytics and machine learning to support modern precision agriculture workflows.
 
@@ -8,7 +8,7 @@ The system combines field structure management (farms, fields, seasons) with ana
 
 ## Overview
 
-MLR Predictor provides a centralized dashboard where users can:
+AgroDoctorBot provides a centralized dashboard where users can:
 
 - Manage farms and agricultural fields
 - Track seasonal crop data
@@ -78,7 +78,7 @@ Defines agricultural periods (year + crop) linked to a specific field.
 
 ```bash
 git clone <repository-url>
-cd mlr-predictor
+cd AgroDoctorBot
 ````
 
 ### 2. Install dependencies
@@ -94,7 +94,7 @@ pnpm install
 Create `.env` file:
 
 ```
-DATABASE_URL="postgresql://user:password@localhost:5432/mlr_predictor"
+DATABASE_URL="postgresql://user:password@localhost:5432/agrodoctorbot"
 ```
 
 ---

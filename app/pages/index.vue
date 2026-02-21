@@ -1,11 +1,11 @@
 <script setup lang="ts">
 useHead({
-  title: "AgroRobotBot — Smart Farming with AI & Solar Robotics",
+  title: "AgroDoctorBot — Smart Farming with AI & Solar Robotics",
   meta: [
     {
       name: "description",
       content:
-        "AgroRobotBot is a solar-powered AI agrobot with an onboard lab for soil analytics, plant disease detection, and real-time recommendations.",
+        "AgroDoctorBot is a solar-powered AI agrobot with an onboard lab for soil analytics, plant disease detection, and real-time recommendations.",
     },
     { name: "theme-color", content: "#16a34a" },
   ],
@@ -453,7 +453,7 @@ const faqs = [
             </UBadge>
 
             <h2 class="mt-4 text-2xl font-semibold tracking-tight sm:text-3xl">
-              Want to run a pilot with AgroRobotBot?
+              Want to run a pilot with AgroDoctorBot?
             </h2>
 
             <p class="mt-3 text-muted">

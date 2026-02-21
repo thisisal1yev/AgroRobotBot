@@ -41,7 +41,7 @@ const NAV_LINKS_MOBILE = computed<NavigationMenuItem[]>(() => [
     <template #title>
       <NuxtLink to="/" class="flex items-center gap-2 font-semibold">
         <UIcon name="i-lucide-leaf" class="text-primary size-5" />
-        AgroRobotBot
+        AgroDoctorBot
       </NuxtLink>
     </template>
 
