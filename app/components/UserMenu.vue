@@ -6,10 +6,10 @@ defineProps<{
 }>()
 
 const colorMode = useColorMode()
-const { user } = useUserSession()
+const { user, clear } = useUserSession()
 
 const handleLogout = async () => {
-  await $fetch('/api/auth/logout', { method: 'POST' })
+  await clear()
   await navigateTo('/auth')
 }
 
@@ -18,7 +18,7 @@ const profileRoute = computed(() =>
 )
 
 const items = computed<DropdownMenuItem[][]>(() => [
-  [
+[
     {
       label: 'Profile',
       icon: 'i-lucide-user',

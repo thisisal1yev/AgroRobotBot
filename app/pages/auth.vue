@@ -11,21 +11,16 @@ definePageMeta({
 });
 
 const toast = useToast();
-const router = useRouter();
-const { loggedIn, user } = useUserSession();
+const { loggedIn, user, fetch: fetchSession } = useUserSession();
 
 const activeTab = ref<"login" | "register">("login");
 const isLoading = ref(false);
 const error = ref<string | null>(null);
 
-
-const redirectByRole = (role?: string) => {
-  return role === "ADMIN" ? "/admin" : "/farmer";
-};
-
 watchEffect(() => {
   if (loggedIn.value && user.value) {
-    router.push(redirectByRole(user.value.role));
+    const base = user.value.role === "ADMIN" ? "/admin" : "/farmer";
+    navigateTo(base);
   }
 });
 
@@ -120,12 +115,12 @@ const handleLogin = async (payload: FormSubmitEvent<LoginPayload>) => {
   error.value = null;
 
   try {
-    const res = await $fetch<{ role: string }>("/api/auth/login", {
+    await $fetch("/api/auth/login", {
       method: "POST",
       body: { email, password },
     });
 
-    await navigateTo(redirectByRole(res.role));
+    await fetchSession();
   } catch (e: any) {
     error.value =
       e?.data?.message ||
@@ -158,11 +153,11 @@ const handleRegister = async (payload: FormSubmitEvent<RegisterPayload>) => {
     });
 
     try {
-      const res = await $fetch<{ role: string }>("/api/auth/login", {
+      await $fetch("/api/auth/login", {
         method: "POST",
         body: { email, password },
       });
-      await navigateTo(redirectByRole(res.role));
+      await fetchSession();
     } catch {
       activeTab.value = "login";
     }
@@ -190,7 +185,7 @@ watch(activeTab, () => {
         >
           <UIcon name="i-lucide-leaf" size="xl" class="text-primary text-3xl" />
         </div>
-        <p class="mt-3 text-sm text-gray-500">AgroDoctorBot</p>
+        <p class="mt-3 text-xl font-bold">AgroDoctorBot</p>
       </NuxtLink>
     </div>
 

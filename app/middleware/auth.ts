@@ -1,17 +1,18 @@
-export default defineNuxtRouteMiddleware(async (to) => {
+import type { UserRole } from "~/constants/roles";
+import { ROLE_REDIRECTS } from "~/constants/routes";
+
+export default defineNuxtRouteMiddleware((to) => {
   const { loggedIn, user } = useUserSession();
 
-  if (!loggedIn.value || !user.value) {
+  if (!loggedIn.value || !user.value?.role) {
+    if (to.path === "/auth") return;
     return navigateTo("/auth");
   }
 
-  const role = user.value.role;
+  const role = user.value.role as UserRole;
+  const base = ROLE_REDIRECTS[role];
 
-  if (role === "ADMIN" && !to.path.startsWith("/admin")) {
-    return navigateTo("/admin");
-  }
+  if (to.path === base || to.path.startsWith(base + "/")) return;
 
-  if (role === "FARMER" && !to.path.startsWith("/farmer")) {
-    return navigateTo("/farmer");
-  }
+  return navigateTo(base);
 });
