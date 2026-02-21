@@ -40,7 +40,6 @@ const columns: TableColumn<Field>[] = [
     cell: ({ row }) => h(resolveComponent('UBadge'), {
       color: row.original._count.alerts ? 'error' : 'neutral',
       variant: 'subtle',
-      size: 'xs',
       label: String(row.original._count.alerts)
     })
   },

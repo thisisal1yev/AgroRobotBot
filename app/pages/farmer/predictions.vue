@@ -23,7 +23,6 @@ const columns: TableColumn<Analysis>[] = [
     cell: ({ row }) => h(resolveComponent('UBadge'), {
       color: row.original.healthy ? 'success' : 'error',
       variant: 'subtle',
-      size: 'xs',
       label: row.original.healthy ? 'Healthy' : (row.original.disease || 'Disease detected')
     })
   },

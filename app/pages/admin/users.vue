@@ -31,7 +31,6 @@ const columns: TableColumn<User>[] = [
     cell: ({ row }) => h(resolveComponent('UBadge'), {
       color: row.original.role === 'ADMIN' ? 'error' : 'success',
       variant: 'subtle',
-      size: 'xs',
       label: row.original.role
     })
   },

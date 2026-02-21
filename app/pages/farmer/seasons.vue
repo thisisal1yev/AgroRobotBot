@@ -39,7 +39,6 @@ const columns: TableColumn<Season>[] = [
     cell: ({ row }) => h(resolveComponent('UBadge'), {
       color: seasonStatusColor(row.original.status),
       variant: 'subtle',
-      size: 'xs',
       label: row.original.status
     })
   },

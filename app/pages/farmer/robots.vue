@@ -35,7 +35,6 @@ const columns: TableColumn<Robot>[] = [
     cell: ({ row }) => h(resolveComponent('UBadge'), {
       color: robotStatusColor(row.original.status),
       variant: 'subtle',
-      size: 'xs',
       label: row.original.status
     })
   },

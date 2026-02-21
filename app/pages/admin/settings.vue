@@ -34,7 +34,7 @@ const { data: me } = await useFetch("/api/auth/me", { server: false });
                   {{ me?.name || "Admin" }}
                 </p>
                 <p class="text-sm text-muted">{{ me?.email }}</p>
-                <UBadge color="error" variant="subtle" size="xs" label="ADMIN" class="mt-1" />
+                <UBadge color="error" variant="subtle" label="ADMIN" class="mt-1" />
               </div>
             </div>
           </div>

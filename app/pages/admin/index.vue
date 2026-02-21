@@ -215,7 +215,6 @@ const activeAlerts = computed(() => (alerts.value ?? []).slice(0, 5));
                   <UBadge
                     :color="u.role === 'ADMIN' ? 'error' : 'success'"
                     variant="subtle"
-                    size="xs"
                     :label="u.role"
                   />
                   <div class="text-right">

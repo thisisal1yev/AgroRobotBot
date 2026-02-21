@@ -42,7 +42,6 @@ const columns: TableColumn<Alert>[] = [
     cell: ({ row }) => h(resolveComponent('UBadge'), {
       color: severityColor(row.original.severity),
       variant: 'subtle',
-      size: 'xs',
       label: row.original.severity
     })
   },
@@ -52,7 +51,6 @@ const columns: TableColumn<Alert>[] = [
     cell: ({ row }) => h(resolveComponent('UBadge'), {
       color: row.original.status === 'ACTIVE' ? 'error' : 'success',
       variant: 'subtle',
-      size: 'xs',
       label: row.original.status
     })
   },

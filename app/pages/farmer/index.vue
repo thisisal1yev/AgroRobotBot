@@ -289,7 +289,6 @@ const activeAlerts = computed(() => (alerts.value ?? []).slice(0, 5));
                   <UBadge
                     :color="severityColor(alert.severity)"
                     variant="subtle"
-                    size="xs"
                     :label="alert.severity"
                   />
                 </div>
