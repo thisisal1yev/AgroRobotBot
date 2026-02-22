@@ -7,7 +7,8 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: "Name, serial number, and farm are required" });
   }
 
-  const farm = await prisma.farm.findUnique({ where: { id: body.farmId } });
+  const farmId = Number(body.farmId);
+  const farm = await prisma.farm.findUnique({ where: { id: farmId } });
   if (!farm) {
     throw createError({ statusCode: 400, message: "Farm not found" });
   }
@@ -31,7 +32,7 @@ export default defineEventHandler(async (event) => {
       status: body.status || "OFFLINE",
       batteryLevel: parseInt(body.batteryLevel) || 100,
       firmwareVersion: body.firmwareVersion || "1.0.0",
-      farmId: body.farmId,
+      farmId,
     },
     include: {
       farm: { select: { id: true, name: true } },

@@ -36,6 +36,10 @@ function handleSaved() {
   refresh()
 }
 
+function viewRobot(r: Robot) {
+  navigateTo(`/farmer/robots/${r.id}`)
+}
+
 const deleteSingleMessage = (r: Robot) => `Are you sure you want to delete "${r.name}"?`
 const deleteBulkMessage = (n: number) => `Are you sure you want to delete ${n} robots?`
 
@@ -101,6 +105,7 @@ const columns: TableColumn<Robot>[] = [
         :delete-single-message="deleteSingleMessage"
         :delete-bulk-message="deleteBulkMessage"
         show-edit-action
+        @row-click="viewRobot"
         @edit="openEdit"
         @delete="handleDelete"
       />

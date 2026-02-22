@@ -3,7 +3,7 @@ import { prisma } from "~~/prisma/db";
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event);
 
-  const where = user.role === "ADMIN" ? {} : { ownerId: user.id };
+  const where = user.role === "ADMIN" ? {} : { ownerId: Number(user.id) };
 
   const farms = await prisma.farm.findMany({
     where,

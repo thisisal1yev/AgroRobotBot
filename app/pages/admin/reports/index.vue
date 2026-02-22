@@ -12,6 +12,10 @@ const { data: reports, status } = await useFetch("/api/reports", {
 
 type Report = NonNullable<typeof reports.value>[number]
 
+function viewReport(r: Report) {
+  navigateTo(`/admin/reports/${r.id}`)
+}
+
 const deleteSingleMessage = (r: Report) => `Are you sure you want to delete report "${r.title}"?`
 const deleteBulkMessage = (n: number) => `Are you sure you want to delete ${n} reports?`
 
@@ -80,6 +84,7 @@ const columns: TableColumn<Report>[] = [
         :delete-single-message="deleteSingleMessage"
         :delete-bulk-message="deleteBulkMessage"
         hide-delete-btn
+        @row-click="viewReport"
       />
     </template>
   </UDashboardPanel>

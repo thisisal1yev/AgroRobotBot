@@ -25,6 +25,10 @@ function openEdit(season: Season) {
   slideoverOpen.value = true
 }
 
+function viewSeason(s: Season) {
+  navigateTo(`/farmer/seasons/${s.id}`)
+}
+
 async function handleDelete(ids: (number | string)[]) {
   for (const id of ids) {
     await $fetch(`/api/seasons/${id}`, { method: 'DELETE' })
@@ -100,6 +104,7 @@ const columns: TableColumn<Season>[] = [
         :delete-single-message="deleteSingleMessage"
         :delete-bulk-message="deleteBulkMessage"
         show-edit-action
+        @row-click="viewSeason"
         @edit="openEdit"
         @delete="handleDelete"
       />

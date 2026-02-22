@@ -1,7 +1,7 @@
 import { prisma } from "~~/prisma/db";
 
 export default defineEventHandler(async (event) => {
-  const id = getRouterParam(event, "id");
+  const id = getRouterId(event);
 
   const field = await prisma.field.findUnique({
     where: { id },

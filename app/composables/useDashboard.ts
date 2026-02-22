@@ -46,6 +46,12 @@ export function useDashboard() {
       else if (base === "/farmer") go("/farmer/alerts");
     },
 
+    "g-b": () => {
+      const base = basePath.value;
+      if (base === "/admin") go("/admin/robots");
+      else if (base === "/farmer") go("/farmer/robots");
+    },
+
     "g-s": () => {
       const base = basePath.value;
       if (base === "/admin") go("/admin/settings");

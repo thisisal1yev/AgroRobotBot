@@ -11,6 +11,7 @@ const links = computed<NavigationMenuItem[][]>(() => [
     { label: "Fields", icon: "i-lucide-map", to: "/admin/fields" },
     { label: "Reports", icon: "i-lucide-bar-chart-3", to: "/admin/reports" },
     { label: "Alerts", icon: "i-lucide-bell", to: "/admin/alerts" },
+    { label: "Robots", icon: "i-lucide-bot", to: "/admin/robots" },
   ],
   [
     { label: "Settings", icon: "i-lucide-settings", to: "/admin/settings" },
@@ -25,6 +26,7 @@ const hotkeys = [
   { keys: "G - M", action: "Fields" },
   { keys: "G - R", action: "Reports" },
   { keys: "G - A", action: "Alerts" },
+  { keys: "G - B", action: "Robots" },
   { keys: "G - S", action: "Settings" },
 ];
 </script>

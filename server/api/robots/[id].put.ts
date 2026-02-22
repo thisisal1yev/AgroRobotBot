@@ -1,7 +1,7 @@
 import { prisma } from "~~/prisma/db";
 
 export default defineEventHandler(async (event) => {
-  const id = getRouterParam(event, "id");
+  const id = getRouterId(event);
   const body = await readBody(event);
 
   const robot = await prisma.robot.findUnique({
@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
       ...(body.status && { status: body.status }),
       ...(body.batteryLevel !== undefined && { batteryLevel: parseInt(body.batteryLevel) }),
       ...(body.firmwareVersion !== undefined && { firmwareVersion: body.firmwareVersion }),
-      ...(body.farmId && { farmId: body.farmId }),
+      ...(body.farmId != null && { farmId: Number(body.farmId) }),
     },
     include: {
       farm: { select: { id: true, name: true } },

@@ -25,6 +25,10 @@ function openEdit(field: Field) {
   slideoverOpen.value = true
 }
 
+function viewField(f: Field) {
+  navigateTo(`/farmer/fields/${f.id}`)
+}
+
 async function handleDelete(ids: (number | string)[]) {
   for (const id of ids) {
     await $fetch(`/api/fields/${id}`, { method: 'DELETE' })
@@ -101,6 +105,7 @@ const columns: TableColumn<Field>[] = [
         :delete-single-message="deleteSingleMessage"
         :delete-bulk-message="deleteBulkMessage"
         show-edit-action
+        @row-click="viewField"
         @edit="openEdit"
         @delete="handleDelete"
       />

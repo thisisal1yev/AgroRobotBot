@@ -1,7 +1,7 @@
 import { prisma } from "~~/prisma/db";
 
 export default defineEventHandler(async (event) => {
-  const id = getRouterParam(event, "id");
+  const id = getRouterId(event);
   const body = await readBody(event);
 
   const farm = await prisma.farm.findUnique({ where: { id } });
@@ -16,8 +16,9 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: "Invalid soil type" });
   }
 
-  if (body.ownerId && user.role === "ADMIN") {
-    const owner = await prisma.user.findUnique({ where: { id: body.ownerId } });
+  if (body.ownerId != null && user.role === "ADMIN") {
+    const ownerId = Number(body.ownerId);
+    const owner = await prisma.user.findUnique({ where: { id: ownerId } });
     if (!owner) {
       throw createError({ statusCode: 400, message: "Owner not found" });
     }
@@ -30,7 +31,7 @@ export default defineEventHandler(async (event) => {
       ...(body.location !== undefined && { location: body.location }),
       ...(body.area !== undefined && { area: parseFloat(body.area) }),
       ...(body.soilType && { soilType: body.soilType }),
-      ...(body.ownerId && user.role === "ADMIN" && { ownerId: body.ownerId }),
+      ...(body.ownerId != null && user.role === "ADMIN" && { ownerId: Number(body.ownerId) }),
     },
     include: {
       owner: { select: { id: true, name: true, email: true } },

@@ -1,7 +1,7 @@
 import { prisma } from "~~/prisma/db";
 
 export default defineEventHandler(async (event) => {
-  const id = getRouterParam(event, "id");
+  const id = getRouterId(event);
   const body = await readBody(event);
 
   const field = await prisma.field.findUnique({
@@ -14,8 +14,8 @@ export default defineEventHandler(async (event) => {
 
   await requireOwnerOrAdmin(event, field.farm.ownerId);
 
-  if (body.farmId) {
-    const farm = await prisma.farm.findUnique({ where: { id: body.farmId } });
+  if (body.farmId != null) {
+    const farm = await prisma.farm.findUnique({ where: { id: Number(body.farmId) } });
     if (!farm) {
       throw createError({ statusCode: 400, message: "Farm not found" });
     }
@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
       ...(body.area !== undefined && { area: parseFloat(body.area) }),
       ...(body.cropType !== undefined && { cropType: body.cropType }),
       ...(body.coordinates !== undefined && { coordinates: body.coordinates || null }),
-      ...(body.farmId && { farmId: body.farmId }),
+      ...(body.farmId != null && { farmId: Number(body.farmId) }),
     },
     include: {
       farm: { select: { id: true, name: true } },

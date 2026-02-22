@@ -1,7 +1,7 @@
 import { prisma } from "~~/prisma/db";
 
 export default defineEventHandler(async (event) => {
-  const id = getRouterParam(event, "id");
+  const id = getRouterId(event);
   const body = await readBody(event);
 
   const season = await prisma.season.findUnique({
@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
       ...(body.status && { status: body.status }),
       ...(body.startDate && { startDate: new Date(body.startDate) }),
       ...(body.endDate !== undefined && { endDate: body.endDate ? new Date(body.endDate) : null }),
-      ...(body.farmId && { farmId: body.farmId }),
+      ...(body.farmId != null && { farmId: Number(body.farmId) }),
     },
     include: {
       farm: { select: { id: true, name: true } },

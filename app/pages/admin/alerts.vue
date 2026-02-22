@@ -18,6 +18,10 @@ const filteredAlerts = computed(() => {
   return (alerts.value ?? []).filter((a) => a.status === activeFilter.value);
 });
 
+function viewAlert(a: Alert) {
+  navigateTo(`/admin/alerts/${a.id}`)
+}
+
 const deleteSingleMessage = (a: Alert) => `Are you sure you want to delete alert "${a.title}"?`
 const deleteBulkMessage = (n: number) => `Are you sure you want to delete ${n} alerts?`
 
@@ -90,6 +94,7 @@ const columns: TableColumn<Alert>[] = [
         :delete-single-message="deleteSingleMessage"
         :delete-bulk-message="deleteBulkMessage"
         hide-delete-btn
+        @row-click="viewAlert"
       />
     </template>
   </UDashboardPanel>

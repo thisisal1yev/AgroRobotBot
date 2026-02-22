@@ -7,7 +7,8 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: "Name and farm are required" });
   }
 
-  const farm = await prisma.farm.findUnique({ where: { id: body.farmId } });
+  const farmId = Number(body.farmId);
+  const farm = await prisma.farm.findUnique({ where: { id: farmId } });
   if (!farm) {
     throw createError({ statusCode: 400, message: "Farm not found" });
   }
@@ -20,7 +21,7 @@ export default defineEventHandler(async (event) => {
       area: parseFloat(body.area) || 0,
       cropType: body.cropType || "",
       coordinates: body.coordinates || null,
-      farmId: body.farmId,
+      farmId,
     },
     include: {
       farm: { select: { id: true, name: true } },

@@ -12,6 +12,10 @@ const { data: robots, status } = await useFetch("/api/robots", {
 
 type Robot = NonNullable<typeof robots.value>[number]
 
+function viewRobot(r: Robot) {
+  navigateTo(`/admin/robots/${r.id}`);
+}
+
 const deleteSingleMessage = (r: Robot) => `Are you sure you want to delete "${r.name}"?`
 const deleteBulkMessage = (n: number) => `Are you sure you want to delete ${n} robots?`
 
@@ -74,6 +78,7 @@ const columns: TableColumn<Robot>[] = [
         :delete-single-message="deleteSingleMessage"
         :delete-bulk-message="deleteBulkMessage"
         hide-delete-btn
+        @row-click="viewRobot"
       />
     </template>
   </UDashboardPanel>

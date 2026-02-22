@@ -3,7 +3,7 @@ import { prisma } from "~~/prisma/db";
 export default defineEventHandler(async (event) => {
   await requireAdmin(event);
 
-  const id = getRouterParam(event, "id");
+  const id = getRouterId(event);
   const body = await readBody(event);
 
   const existing = await prisma.user.findUnique({ where: { id } });

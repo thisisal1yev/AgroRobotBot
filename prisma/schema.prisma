@@ -58,7 +58,7 @@ enum AlertStatus {
 // ── Models ─────────────────────────────────────────────
 
 model User {
-  id        String   @id @default(cuid())
+  id        Int      @id @default(autoincrement())
   email     String   @unique
   name      String?
   password  String
@@ -71,7 +71,7 @@ model User {
 }
 
 model Farm {
-  id        String   @id @default(cuid())
+  id        Int      @id @default(autoincrement())
   name      String
   location  String
   area      Float
@@ -79,7 +79,7 @@ model Farm {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  ownerId String
+  ownerId Int
   owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
   fields  Field[]
@@ -89,7 +89,7 @@ model Farm {
 }
 
 model Field {
-  id          String   @id @default(cuid())
+  id          Int      @id @default(autoincrement())
   name        String
   area        Float
   cropType    String
@@ -97,7 +97,7 @@ model Field {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  farmId String
+  farmId Int
   farm   Farm   @relation(fields: [farmId], references: [id], onDelete: Cascade)
 
   telemetryReadings TelemetryReading[]
@@ -108,17 +108,17 @@ model Field {
 }
 
 model Robot {
-  id              String      @id @default(cuid())
+  id              Int         @id @default(autoincrement())
   name            String
   serialNumber    String      @unique
   status          RobotStatus @default(OFFLINE)
   batteryLevel    Int         @default(100)
   lastSeenAt      DateTime?
-  firmwareVersion String      @default("1.0.0")
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  firmwareVersion String     @default("1.0.0")
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
 
-  farmId String
+  farmId Int
   farm   Farm   @relation(fields: [farmId], references: [id], onDelete: Cascade)
 
   missions          Mission[]
@@ -126,7 +126,7 @@ model Robot {
 }
 
 model Mission {
-  id          String        @id @default(cuid())
+  id          Int           @id @default(autoincrement())
   type        String
   status      MissionStatus @default(PENDING)
   startedAt   DateTime?
@@ -134,15 +134,15 @@ model Mission {
   notes       String?
   createdAt   DateTime      @default(now())
 
-  robotId String
+  robotId Int
   robot   Robot  @relation(fields: [robotId], references: [id], onDelete: Cascade)
 
-  fieldId String
+  fieldId Int
   field   Field  @relation(fields: [fieldId], references: [id], onDelete: Cascade)
 }
 
 model TelemetryReading {
-  id          String   @id @default(cuid())
+  id          Int      @id @default(autoincrement())
   moisture    Float
   ph          Float
   nitrogen    Float
@@ -153,27 +153,27 @@ model TelemetryReading {
   humidity    Float
   recordedAt  DateTime @default(now())
 
-  fieldId String
+  fieldId Int
   field   Field  @relation(fields: [fieldId], references: [id], onDelete: Cascade)
 
-  robotId String
+  robotId Int
   robot   Robot  @relation(fields: [robotId], references: [id], onDelete: Cascade)
 }
 
 model PlantAnalysis {
-  id         String   @id @default(cuid())
+  id         Int      @id @default(autoincrement())
   imageUrl   String
   disease    String?
   confidence Float
   healthy    Boolean  @default(true)
   createdAt  DateTime @default(now())
 
-  fieldId String
+  fieldId Int
   field   Field  @relation(fields: [fieldId], references: [id], onDelete: Cascade)
 }
 
 model Alert {
-  id         String        @id @default(cuid())
+  id         Int           @id @default(autoincrement())
   title      String
   message    String
   severity   AlertSeverity @default(MEDIUM)
@@ -181,12 +181,12 @@ model Alert {
   resolvedAt DateTime?
   createdAt  DateTime      @default(now())
 
-  fieldId String
+  fieldId Int
   field   Field  @relation(fields: [fieldId], references: [id], onDelete: Cascade)
 }
 
 model Recommendation {
-  id          String   @id @default(cuid())
+  id          Int      @id @default(autoincrement())
   title       String
   description String
   category    String
@@ -194,12 +194,12 @@ model Recommendation {
   applied     Boolean  @default(false)
   createdAt   DateTime @default(now())
 
-  fieldId String
+  fieldId Int
   field   Field  @relation(fields: [fieldId], references: [id], onDelete: Cascade)
 }
 
 model Season {
-  id        String       @id @default(cuid())
+  id        Int          @id @default(autoincrement())
   name      String
   year      Int
   cropType  String
@@ -209,20 +209,20 @@ model Season {
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
 
-  farmId String
+  farmId Int
   farm   Farm   @relation(fields: [farmId], references: [id], onDelete: Cascade)
 }
 
 model Report {
-  id          String   @id @default(cuid())
+  id          Int      @id @default(autoincrement())
   title       String
   type        String
   fileUrl     String?
   generatedAt DateTime @default(now())
 
-  farmId String
+  farmId Int
   farm   Farm   @relation(fields: [farmId], references: [id], onDelete: Cascade)
 
-  generatedById String
+  generatedById Int
   generatedBy   User   @relation(fields: [generatedById], references: [id], onDelete: Cascade)
 }

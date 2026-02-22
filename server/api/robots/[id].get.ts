@@ -2,7 +2,7 @@ import { prisma } from "~~/prisma/db";
 
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event);
-  const id = getRouterParam(event, "id");
+  const id = getRouterId(event);
 
   const robot = await prisma.robot.findUnique({
     where: { id },
@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, message: "Robot not found" });
   }
 
-  if (user.role !== "ADMIN" && robot.farm.ownerId !== user.id) {
+  if (user.role !== "ADMIN" && robot.farm.ownerId !== Number(user.id)) {
     throw createError({ statusCode: 403, message: "Access denied" });
   }
 
