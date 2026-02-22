@@ -109,6 +109,7 @@ const columns: TableColumn<Robot>[] = [
         @edit="openEdit"
         @delete="handleDelete"
       />
+      
       <RobotFormSlideover v-model:open="slideoverOpen" :robot="editingRobot" @saved="handleSaved" />
     </template>
   </UDashboardPanel>

@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
   }
 
   if (user.role !== "ADMIN") {
-    where.farm = { ownerId: Number(user.id) };
+    where.farm = { is: { ownerId: getUserIdNumber(user) } };
   }
 
   const fields = await prisma.field.findMany({

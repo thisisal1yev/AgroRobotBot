@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, message: "Season not found" });
   }
 
-  if (user.role !== "ADMIN" && season.farm.ownerId !== Number(user.id)) {
+  if (user.role !== "ADMIN" && season.farm.ownerId !== getUserIdNumber(user)) {
     throw createError({ statusCode: 403, message: "Access denied" });
   }
 

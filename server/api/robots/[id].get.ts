@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, message: "Robot not found" });
   }
 
-  if (user.role !== "ADMIN" && robot.farm.ownerId !== Number(user.id)) {
+  if (user.role !== "ADMIN" && robot.farm.ownerId !== getUserIdNumber(user)) {
     throw createError({ statusCode: 403, message: "Access denied" });
   }
 

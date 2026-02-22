@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
   }
 
   if (user.role !== "ADMIN") {
-    where.field = { farm: { ownerId: Number(user.id) } };
+    where.field = { farm: { is: { ownerId: getUserIdNumber(user) } } };
   }
 
   const readings = await prisma.telemetryReading.findMany({

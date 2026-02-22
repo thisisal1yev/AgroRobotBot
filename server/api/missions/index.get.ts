@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
   }
 
   if (user.role !== "ADMIN") {
-    where.robot = { farm: { ownerId: Number(user.id) } };
+    where.robot = { farm: { is: { ownerId: getUserIdNumber(user) } } };
   }
 
   const missions = await prisma.mission.findMany({

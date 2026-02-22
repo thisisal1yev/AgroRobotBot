@@ -29,3 +29,15 @@ export async function requireOwnerOrAdmin(event: H3Event, ownerId: number) {
 
   return user;
 }
+
+/**
+ * Returns the current user's id as a number for Prisma (Int id).
+ * Throws 401 if session user id is missing or not a valid integer (e.g. old cuid in session).
+ */
+export function getUserIdNumber(user: { id?: unknown }): number {
+  const id = Number(user?.id);
+  if (Number.isNaN(id) || !Number.isInteger(id) || id < 1) {
+    throw createError({ statusCode: 401, message: "Invalid session" });
+  }
+  return id;
+}
