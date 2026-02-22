@@ -121,10 +121,11 @@ const handleLogin = async (payload: FormSubmitEvent<LoginPayload>) => {
     });
 
     await fetchSession();
-  } catch (e: any) {
+  } catch (e: unknown) {
+    const err = e as { data?: { message?: string }; statusMessage?: string };
     error.value =
-      e?.data?.message ||
-      e?.statusMessage ||
+      err?.data?.message ||
+      err?.statusMessage ||
       "Sign in failed. Please try again.";
   } finally {
     isLoading.value = false;
@@ -161,10 +162,11 @@ const handleRegister = async (payload: FormSubmitEvent<RegisterPayload>) => {
     } catch {
       activeTab.value = "login";
     }
-  } catch (e: any) {
+  } catch (e: unknown) {
+    const err = e as { statusMessage?: string; data?: { message?: string } };
     error.value =
-      e?.statusMessage ||
-      e?.data?.message ||
+      err?.statusMessage ||
+      err?.data?.message ||
       "Registration failed. Please try again.";
   } finally {
     isLoading.value = false;

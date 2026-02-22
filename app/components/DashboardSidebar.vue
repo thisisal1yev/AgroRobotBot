@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from "@nuxt/ui";
 
-const props = defineProps<{
+defineProps<{
   sidebarId: string;
   links: NavigationMenuItem[][];
   hotkeys: { keys: string; action: string }[];

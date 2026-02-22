@@ -1,8 +1,21 @@
-<script setup lang="ts" generic="T extends { id: number | string; [key: string]: any }">
+<script setup lang="ts" generic="T extends { id: number | string; [key: string]: unknown }">
 import type { TableColumn } from '@nuxt/ui'
 import { upperFirst } from 'scule'
 import { getPaginationRowModel } from '@tanstack/table-core'
 import type { Row } from '@tanstack/table-core'
+
+/** Ref type for UTable instance exposing tableApi (Nuxt UI DataTable) */
+interface TableRefApi<T> {
+  tableApi?: {
+    getFilteredSelectedRowModel(): { rows: Row<T>[] }
+    getColumn(key: string): { getFilterValue(): unknown; setFilterValue(v: unknown): void } | undefined
+    resetRowSelection(): void
+    getAllColumns(): Array<{ id: string; getCanHide(): boolean; getIsVisible(): boolean; toggleVisibility(v: boolean): void }>
+    getFilteredRowModel(): { rows: unknown[] }
+    getState(): { pagination: { pageIndex: number; pageSize: number } }
+    setPageIndex(n: number): void
+  }
+}
 
 const props = withDefaults(defineProps<{
   data: T[]
@@ -25,6 +38,10 @@ const props = withDefaults(defineProps<{
   searchKey: 'name',
   emptyIcon: 'i-lucide-inbox',
   emptyText: 'No data found',
+  searchPlaceholder: 'Search...',
+  deleteTitle: 'Delete',
+  deleteSingleMessage: undefined,
+  deleteBulkMessage: undefined,
   nameKey: 'name',
   hideDeleteBtn: false,
   showEditAction: false
@@ -42,7 +59,7 @@ const UDropdownMenu = resolveComponent('UDropdownMenu')
 const UCheckbox = resolveComponent('UCheckbox')
 
 const toast = useToast()
-const table = useTemplateRef('table')
+const table = useTemplateRef<TableRefApi<T>>('table')
 
 const columnFilters = ref([{ id: props.searchKey, value: '' }])
 const columnVisibility = ref()
@@ -106,6 +123,21 @@ watch(rowSelection, async () => {
   emit('select', getSelectedItems())
 }, { deep: true })
 
+const columnDisplayItems = computed(() => {
+  const api = table.value?.tableApi;
+  if (!api) return [];
+  const cols = api.getAllColumns();
+  return cols
+    .filter((c: { getCanHide(): boolean }) => c.getCanHide())
+    .map((c: { id: string; getIsVisible(): boolean; toggleVisibility(v: boolean): void }) => ({
+      label: upperFirst(c.id),
+      type: "checkbox" as const,
+      checked: c.getIsVisible(),
+      onUpdateChecked: (checked: boolean) => c.toggleVisibility(!!checked),
+      onSelect: (e?: Event) => e?.preventDefault(),
+    }));
+});
+
 const fullColumns = computed((): TableColumn<T>[] => {
   const cols: TableColumn<T>[] = [
     {
@@ -135,7 +167,7 @@ const fullColumns = computed((): TableColumn<T>[] => {
               label: 'Copy name',
               icon: 'i-lucide-copy',
               onSelect: () => {
-                navigator.clipboard.writeText(String((row.original as any)[props.nameKey] || ''))
+                navigator.clipboard.writeText(String((row.original as Record<string, unknown>)[props.nameKey] || ''))
                 toast.add({ title: 'Copied to clipboard' })
               }
             },
@@ -209,13 +241,7 @@ defineExpose({
         </UButton>
 
         <UDropdownMenu
-          :items="table?.tableApi?.getAllColumns().filter((c: any) => c.getCanHide()).map((c: any) => ({
-            label: upperFirst(c.id),
-            type: 'checkbox' as const,
-            checked: c.getIsVisible(),
-            onUpdateChecked: (checked: boolean) => c.toggleVisibility(!!checked),
-            onSelect: (e?: Event) => e?.preventDefault()
-          }))"
+          :items="columnDisplayItems"
           :content="{ align: 'end' }"
         >
           <UButton label="Display" color="neutral" variant="outline" trailing-icon="i-lucide-settings-2" />

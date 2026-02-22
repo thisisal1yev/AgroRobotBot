@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // Admin can assign any owner; farmer is always the owner
-  const ownerId = user.role === "ADMIN" && body.ownerId != null ? Number(body.ownerId) : (user.id as number);
+  const ownerId = user.role === "ADMIN" && body.ownerId != null ? Number(body.ownerId) : getUserIdNumber(user);
 
   if (user.role === "ADMIN" && body.ownerId != null) {
     const owner = await prisma.user.findUnique({ where: { id: Number(body.ownerId) } });

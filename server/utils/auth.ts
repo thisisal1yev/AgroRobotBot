@@ -23,7 +23,7 @@ export async function requireAdmin(event: H3Event) {
 export async function requireOwnerOrAdmin(event: H3Event, ownerId: number) {
   const user = await requireAuth(event);
 
-  if (user.role !== "ADMIN" && (user.id as number) !== ownerId) {
+  if (user.role !== "ADMIN" && user.id !== ownerId) {
     throw createError({ statusCode: 403, message: "Access denied" });
   }
 

@@ -1,7 +1,8 @@
 <template>
-  <AppHeader />
+  <div>
+    <AppHeader />
 
-  <UMain as="main" class="min-h-screen relative">
+    <UMain as="main" class="min-h-screen relative">
     <svg
       viewBox="0 0 1440 181"
       fill="none"
@@ -50,8 +51,9 @@
       </defs>
     </svg>
 
-    <slot />
-  </UMain>
+      <slot />
+    </UMain>
 
-  <AppFooter />
+    <AppFooter />
+  </div>
 </template>

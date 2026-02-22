@@ -353,8 +353,8 @@ const faqs = [
         <div class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           <UPageCard
             v-for="f in features"
-            spotlight
             :key="f.title"
+            spotlight
             :ui="{ body: 'p-6' }"
           >
             <div class="flex size-10 items-center justify-center rounded-lg bg-primary/10">
@@ -384,8 +384,8 @@ const faqs = [
         <div class="mt-12 grid gap-5 lg:grid-cols-4">
           <UPageCard
             v-for="s in how"
-            spotlight
             :key="s.step"
+            spotlight
             :ui="{ body: 'p-6' }"
           >
             <div class="flex items-center gap-3">
@@ -426,8 +426,8 @@ const faqs = [
         <div class="mt-12 grid gap-5 lg:grid-cols-3">
           <UPageCard
             v-for="u in useCases"
-            spotlight
             :key="u.title"
+            spotlight
             :ui="{ body: 'p-6' }"
           >
             <div class="flex size-10 items-center justify-center rounded-lg bg-primary/10">

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 const props = defineProps<{
   field?: {
-    id: string;
+    id: number;
     name: string;
     area: number;
     cropType: string;
-    farmId: string;
-    coordinates?: any;
+    farmId: number;
+    coordinates?: unknown;
   } | null;
 }>();
 
@@ -24,15 +24,16 @@ const { data: farms } = useFetch("/api/farms", {
   default: () => [],
 });
 
+interface FarmOption { id: number; name: string }
 const farmOptions = computed(() =>
-  (farms.value || []).map((f: any) => ({ label: f.name, value: f.id })),
+  (farms.value || []).map((f: FarmOption) => ({ label: f.name, value: f.id })),
 );
 
 const formState = reactive({
   name: "",
   area: 0,
   cropType: "",
-  farmId: "",
+  farmId: undefined as number | undefined,
   coordinates: "",
 });
 
@@ -41,7 +42,7 @@ watch(open, (val) => {
     formState.name = props.field?.name || "";
     formState.area = props.field?.area || 0;
     formState.cropType = props.field?.cropType || "";
-    formState.farmId = props.field?.farmId || "";
+    formState.farmId = props.field?.farmId ?? undefined;
     formState.coordinates = props.field?.coordinates
       ? JSON.stringify(props.field.coordinates)
       : "";
@@ -55,7 +56,7 @@ async function handleSubmit() {
       name: formState.name,
       area: formState.area,
       cropType: formState.cropType,
-      farmId: formState.farmId,
+      farmId: formState.farmId!,
     };
 
     if (formState.coordinates) {
@@ -83,9 +84,10 @@ async function handleSubmit() {
     });
     open.value = false;
     emit("saved");
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const msg = err && typeof err === "object" && "data" in err && err.data && typeof err.data === "object" && "message" in err.data ? String(err.data.message) : "Something went wrong";
     toast.add({
-      title: err.data?.message || "Something went wrong",
+      title: msg,
       color: "error",
     });
   } finally {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const open = defineModel<boolean>('open', { default: false })
 
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
   title?: string
   message?: string
   confirmText?: string

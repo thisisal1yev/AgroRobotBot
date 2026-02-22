@@ -1,12 +1,12 @@
 <script setup lang="ts">
 const props = defineProps<{
   farm?: {
-    id: string;
+    id: number;
     name: string;
     location: string;
     area: number;
     soilType: string;
-    ownerId?: string;
+    ownerId?: number;
   } | null;
 }>();
 
@@ -27,8 +27,13 @@ const { data: users, refresh: refreshUsers } = useFetch("/api/admin/users", {
   default: () => [],
 });
 
+interface UserOption {
+  id: number;
+  name: string | null;
+  email: string;
+}
 const userOptions = computed(() =>
-  (users.value || []).map((u: any) => ({
+  (users.value || []).map((u: UserOption) => ({
     label: u.name || u.email,
     value: u.id,
   })),
@@ -48,7 +53,7 @@ const formState = reactive({
   location: "",
   area: 0,
   soilType: "LOAM",
-  ownerId: "",
+  ownerId: undefined as number | undefined,
 });
 
 watch(open, async (val) => {
@@ -57,7 +62,7 @@ watch(open, async (val) => {
     formState.location = props.farm?.location || "";
     formState.area = props.farm?.area || 0;
     formState.soilType = props.farm?.soilType || "LOAM";
-    formState.ownerId = props.farm?.ownerId || "";
+    formState.ownerId = props.farm?.ownerId ?? undefined;
 
     if (isAdmin.value) {
       refreshUsers();
@@ -74,7 +79,7 @@ async function handleSubmit() {
       area: formState.area,
       soilType: formState.soilType,
     };
-    if (isAdmin.value && formState.ownerId) {
+    if (isAdmin.value && formState.ownerId != null) {
       body.ownerId = formState.ownerId;
     }
 
@@ -90,9 +95,10 @@ async function handleSubmit() {
     });
     open.value = false;
     emit("saved");
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const msg = err && typeof err === "object" && "data" in err && err.data && typeof err.data === "object" && "message" in err.data ? String(err.data.message) : "Something went wrong";
     toast.add({
-      title: err.data?.message || "Something went wrong",
+      title: msg,
       color: "error",
     });
   } finally {

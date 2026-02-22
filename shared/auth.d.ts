@@ -1,6 +1,6 @@
 declare module "#auth-utils" {
   interface User {
-    id: string;
+    id: number;
     email: string;
     name: string | null;
     role: "FARMER" | "ADMIN";

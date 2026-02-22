@@ -1,13 +1,13 @@
 <script setup lang="ts">
 const props = defineProps<{
   robot?: {
-    id: string;
+    id: number;
     name: string;
     serialNumber: string;
     status: string;
     batteryLevel: number;
     firmwareVersion: string;
-    farmId: string;
+    farmId: number;
   } | null;
 }>();
 
@@ -25,8 +25,9 @@ const { data: farms } = useFetch("/api/farms", {
   default: () => [],
 });
 
+interface FarmOption { id: number; name: string }
 const farmOptions = computed(() =>
-  (farms.value || []).map((f: any) => ({ label: f.name, value: f.id })),
+  (farms.value || []).map((f: FarmOption) => ({ label: f.name, value: f.id })),
 );
 
 const statusOptions = [
@@ -42,7 +43,7 @@ const formState = reactive({
   status: "OFFLINE",
   batteryLevel: 100,
   firmwareVersion: "1.0.0",
-  farmId: "",
+  farmId: undefined as number | undefined,
 });
 
 watch(open, (val) => {
@@ -52,7 +53,7 @@ watch(open, (val) => {
     formState.status = props.robot?.status || "OFFLINE";
     formState.batteryLevel = props.robot?.batteryLevel ?? 100;
     formState.firmwareVersion = props.robot?.firmwareVersion || "1.0.0";
-    formState.farmId = props.robot?.farmId || "";
+    formState.farmId = props.robot?.farmId ?? undefined;
   }
 });
 
@@ -73,9 +74,10 @@ async function handleSubmit() {
     });
     open.value = false;
     emit("saved");
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const msg = err && typeof err === "object" && "data" in err && err.data && typeof err.data === "object" && "message" in err.data ? String(err.data.message) : "Something went wrong";
     toast.add({
-      title: err.data?.message || "Something went wrong",
+      title: msg,
       color: "error",
     });
   } finally {

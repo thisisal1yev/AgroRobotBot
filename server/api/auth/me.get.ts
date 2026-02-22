@@ -10,9 +10,8 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const userId = Number(session.user.id);
   const user = await prisma.user.findUnique({
-    where: { id: userId },
+    where: { id: session.user.id },
     select: {
       id: true,
       email: true,

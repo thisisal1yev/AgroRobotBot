@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   user?: {
-    id: string;
+    id: number;
     name: string | null;
     email: string;
     role: string;
@@ -61,9 +61,10 @@ async function handleSubmit() {
     });
     open.value = false;
     emit("saved");
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const msg = err && typeof err === "object" && "data" in err && err.data && typeof err.data === "object" && "message" in err.data ? String(err.data.message) : "Something went wrong";
     toast.add({
-      title: err.data?.message || "Something went wrong",
+      title: msg,
       color: "error",
     });
   } finally {

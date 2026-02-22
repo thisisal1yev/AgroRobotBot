@@ -12,7 +12,7 @@ const { data: analyses, status } = await useFetch("/api/plant-analyses", {
 
 type Analysis = NonNullable<typeof analyses.value>[number]
 
-const deleteSingleMessage = (a: Analysis) => `Are you sure you want to delete this analysis?`
+const deleteSingleMessage = (_analysis: Analysis) => `Are you sure you want to delete this analysis?`
 const deleteBulkMessage = (n: number) => `Are you sure you want to delete ${n} analyses?`
 
 const columns: TableColumn<Analysis>[] = [

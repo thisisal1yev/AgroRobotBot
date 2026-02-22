@@ -1,14 +1,14 @@
 <script setup lang="ts">
 const props = defineProps<{
   season?: {
-    id: string;
+    id: number;
     name: string;
     year: number;
     cropType: string;
     status: string;
     startDate: string;
     endDate?: string | null;
-    farmId: string;
+    farmId: number;
   } | null;
 }>();
 
@@ -26,8 +26,9 @@ const { data: farms } = useFetch("/api/farms", {
   default: () => [],
 });
 
+interface FarmOption { id: number; name: string }
 const farmOptions = computed(() =>
-  (farms.value || []).map((f: any) => ({ label: f.name, value: f.id })),
+  (farms.value || []).map((f: FarmOption) => ({ label: f.name, value: f.id })),
 );
 
 const statusOptions = [
@@ -43,7 +44,7 @@ const formState = reactive({
   status: "PLANNED",
   startDate: "",
   endDate: "",
-  farmId: "",
+  farmId: undefined as number | undefined,
 });
 
 function toDateInput(date: string | undefined | null): string {
@@ -60,7 +61,7 @@ watch(open, (val) => {
     formState.status = props.season?.status || "PLANNED";
     formState.startDate = toDateInput(props.season?.startDate);
     formState.endDate = toDateInput(props.season?.endDate);
-    formState.farmId = props.season?.farmId || "";
+    formState.farmId = props.season?.farmId ?? undefined;
   }
 });
 
@@ -81,9 +82,10 @@ async function handleSubmit() {
     });
     open.value = false;
     emit("saved");
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const msg = err && typeof err === "object" && "data" in err && err.data && typeof err.data === "object" && "message" in err.data ? String(err.data.message) : "Something went wrong";
     toast.add({
-      title: err.data?.message || "Something went wrong",
+      title: msg,
       color: "error",
     });
   } finally {
