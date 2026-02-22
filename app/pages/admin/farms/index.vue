@@ -6,14 +6,38 @@ definePageMeta({
   middleware: ["auth"],
 });
 
-const { data: farms, status } = await useFetch("/api/farms", {
+const { data: farms, status, refresh } = await useFetch("/api/farms", {
   server: false,
 });
 
 type Farm = NonNullable<typeof farms.value>[number]
 
+const slideoverOpen = ref(false)
+const editingFarm = ref<Farm | null>(null)
+
 function viewFarm(farm: Farm) {
   navigateTo(`/admin/farms/${farm.id}`)
+}
+
+function openCreate() {
+  editingFarm.value = null
+  slideoverOpen.value = true
+}
+
+function openEdit(farm: Farm) {
+  editingFarm.value = farm
+  slideoverOpen.value = true
+}
+
+async function handleDelete(ids: (number | string)[]) {
+  for (const id of ids) {
+    await $fetch(`/api/farms/${id}`, { method: 'DELETE' })
+  }
+  await refresh()
+}
+
+function handleSaved() {
+  refresh()
 }
 
 const deleteSingleMessage = (f: Farm) => `Are you sure you want to delete "${f.name}"?`
@@ -63,6 +87,9 @@ const columns: TableColumn<Farm>[] = [
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
+        <template #right>
+          <UButton label="Create Farm" icon="i-lucide-plus" @click="openCreate" />
+        </template>
       </UDashboardNavbar>
     </template>
 
@@ -78,9 +105,12 @@ const columns: TableColumn<Farm>[] = [
         delete-title="Delete Farms"
         :delete-single-message="deleteSingleMessage"
         :delete-bulk-message="deleteBulkMessage"
-        hide-delete-btn
+        show-edit-action
         @row-click="viewFarm"
+        @edit="openEdit"
+        @delete="handleDelete"
       />
+      <FarmFormSlideover v-model:open="slideoverOpen" :farm="editingFarm" @saved="handleSaved" />
     </template>
   </UDashboardPanel>
 </template>

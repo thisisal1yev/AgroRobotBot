@@ -6,11 +6,35 @@ definePageMeta({
   middleware: ["auth"],
 });
 
-const { data: robots, status } = await useFetch("/api/robots", {
+const { data: robots, status, refresh } = await useFetch("/api/robots", {
   server: false,
 });
 
 type Robot = NonNullable<typeof robots.value>[number]
+
+const slideoverOpen = ref(false)
+const editingRobot = ref<Robot | null>(null)
+
+function openCreate() {
+  editingRobot.value = null
+  slideoverOpen.value = true
+}
+
+function openEdit(robot: Robot) {
+  editingRobot.value = robot
+  slideoverOpen.value = true
+}
+
+async function handleDelete(ids: (number | string)[]) {
+  for (const id of ids) {
+    await $fetch(`/api/robots/${id}`, { method: 'DELETE' })
+  }
+  await refresh()
+}
+
+function handleSaved() {
+  refresh()
+}
 
 const deleteSingleMessage = (r: Robot) => `Are you sure you want to delete "${r.name}"?`
 const deleteBulkMessage = (n: number) => `Are you sure you want to delete ${n} robots?`
@@ -58,6 +82,9 @@ const columns: TableColumn<Robot>[] = [
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
+        <template #right>
+          <UButton label="Create Robot" icon="i-lucide-plus" @click="openCreate" />
+        </template>
       </UDashboardNavbar>
     </template>
 
@@ -73,8 +100,11 @@ const columns: TableColumn<Robot>[] = [
         delete-title="Delete Robots"
         :delete-single-message="deleteSingleMessage"
         :delete-bulk-message="deleteBulkMessage"
-        hide-delete-btn
+        show-edit-action
+        @edit="openEdit"
+        @delete="handleDelete"
       />
+      <RobotFormSlideover v-model:open="slideoverOpen" :robot="editingRobot" @saved="handleSaved" />
     </template>
   </UDashboardPanel>
 </template>

@@ -18,6 +18,7 @@ const props = withDefaults(defineProps<{
   deleteBulkMessage?: (count: number) => string
   nameKey?: string
   hideDeleteBtn?: boolean
+  showEditAction?: boolean
 }>(), {
   loading: false,
   searchable: true,
@@ -25,13 +26,15 @@ const props = withDefaults(defineProps<{
   emptyIcon: 'i-lucide-inbox',
   emptyText: 'No data found',
   nameKey: 'name',
-  hideDeleteBtn: false
+  hideDeleteBtn: false,
+  showEditAction: false
 })
 
 const emit = defineEmits<{
   'delete': [ids: (number | string)[]]
   'row-click': [item: T]
   'select': [items: T[]]
+  'edit': [item: T]
 }>()
 
 const UButton = resolveComponent('UButton')
@@ -141,13 +144,20 @@ const fullColumns = computed((): TableColumn<T>[] => {
               icon: 'i-lucide-eye',
               onSelect: () => emit('row-click', row.original)
             },
-            { type: 'separator' },
-            {
-              label: 'Delete',
-              icon: 'i-lucide-trash',
-              color: 'error',
-              onSelect: () => openSingleDelete(row.original)
-            }
+            ...(props.showEditAction ? [{
+              label: 'Edit',
+              icon: 'i-lucide-pencil',
+              onSelect: () => emit('edit', row.original)
+            }] : []),
+            ...(!props.hideDeleteBtn ? [
+              { type: 'separator' as const },
+              {
+                label: 'Delete',
+                icon: 'i-lucide-trash',
+                color: 'error' as const,
+                onSelect: () => openSingleDelete(row.original)
+              }
+            ] : [])
           ]
         }, () => h(UButton, {
           icon: 'i-lucide-ellipsis-vertical',

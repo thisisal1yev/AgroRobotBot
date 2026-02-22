@@ -6,11 +6,35 @@ definePageMeta({
   middleware: ["auth"],
 });
 
-const { data: seasons, status } = await useFetch("/api/seasons", {
+const { data: seasons, status, refresh } = await useFetch("/api/seasons", {
   server: false,
 });
 
 type Season = NonNullable<typeof seasons.value>[number]
+
+const slideoverOpen = ref(false)
+const editingSeason = ref<Season | null>(null)
+
+function openCreate() {
+  editingSeason.value = null
+  slideoverOpen.value = true
+}
+
+function openEdit(season: Season) {
+  editingSeason.value = season
+  slideoverOpen.value = true
+}
+
+async function handleDelete(ids: (number | string)[]) {
+  for (const id of ids) {
+    await $fetch(`/api/seasons/${id}`, { method: 'DELETE' })
+  }
+  await refresh()
+}
+
+function handleSaved() {
+  refresh()
+}
 
 const deleteSingleMessage = (s: Season) => `Are you sure you want to delete "${s.name}"?`
 const deleteBulkMessage = (n: number) => `Are you sure you want to delete ${n} seasons?`
@@ -57,6 +81,9 @@ const columns: TableColumn<Season>[] = [
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
+        <template #right>
+          <UButton label="Create Season" icon="i-lucide-plus" @click="openCreate" />
+        </template>
       </UDashboardNavbar>
     </template>
 
@@ -72,8 +99,11 @@ const columns: TableColumn<Season>[] = [
         delete-title="Delete Seasons"
         :delete-single-message="deleteSingleMessage"
         :delete-bulk-message="deleteBulkMessage"
-        hide-delete-btn
+        show-edit-action
+        @edit="openEdit"
+        @delete="handleDelete"
       />
+      <SeasonFormSlideover v-model:open="slideoverOpen" :season="editingSeason" @saved="handleSaved" />
     </template>
   </UDashboardPanel>
 </template>

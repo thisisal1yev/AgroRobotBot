@@ -6,11 +6,35 @@ definePageMeta({
   middleware: ["auth"],
 });
 
-const { data: fields, status } = await useFetch("/api/fields", {
+const { data: fields, status, refresh } = await useFetch("/api/fields", {
   server: false,
 });
 
 type Field = NonNullable<typeof fields.value>[number]
+
+const slideoverOpen = ref(false)
+const editingField = ref<Field | null>(null)
+
+function openCreate() {
+  editingField.value = null
+  slideoverOpen.value = true
+}
+
+function openEdit(field: Field) {
+  editingField.value = field
+  slideoverOpen.value = true
+}
+
+async function handleDelete(ids: (number | string)[]) {
+  for (const id of ids) {
+    await $fetch(`/api/fields/${id}`, { method: 'DELETE' })
+  }
+  await refresh()
+}
+
+function handleSaved() {
+  refresh()
+}
 
 const deleteSingleMessage = (f: Field) => `Are you sure you want to delete "${f.name}"?`
 const deleteBulkMessage = (n: number) => `Are you sure you want to delete ${n} fields?`
@@ -58,6 +82,9 @@ const columns: TableColumn<Field>[] = [
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
+        <template #right>
+          <UButton label="Create Field" icon="i-lucide-plus" @click="openCreate" />
+        </template>
       </UDashboardNavbar>
     </template>
 
@@ -73,8 +100,11 @@ const columns: TableColumn<Field>[] = [
         delete-title="Delete Fields"
         :delete-single-message="deleteSingleMessage"
         :delete-bulk-message="deleteBulkMessage"
-        hide-delete-btn
+        show-edit-action
+        @edit="openEdit"
+        @delete="handleDelete"
       />
+      <FieldFormSlideover v-model:open="slideoverOpen" :field="editingField" @saved="handleSaved" />
     </template>
   </UDashboardPanel>
 </template>

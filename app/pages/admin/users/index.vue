@@ -6,11 +6,39 @@ definePageMeta({
   middleware: ["auth"],
 });
 
-const { data: users, status } = await useFetch("/api/admin/users", {
+const { data: users, status, refresh } = await useFetch("/api/admin/users", {
   server: false,
 });
 
 type User = NonNullable<typeof users.value>[number]
+
+const slideoverOpen = ref(false)
+const editingUser = ref<User | null>(null)
+
+function openCreate() {
+  editingUser.value = null
+  slideoverOpen.value = true
+}
+
+function openEdit(user: User) {
+  editingUser.value = user
+  slideoverOpen.value = true
+}
+
+async function handleDelete(ids: (number | string)[]) {
+  for (const id of ids) {
+    await $fetch(`/api/admin/users/${id}`, { method: 'DELETE' })
+  }
+  await refresh()
+}
+
+function handleSaved() {
+  refresh()
+}
+
+function viewUser(user: User) {
+  navigateTo(`/admin/users/${user.id}`)
+}
 
 const deleteSingleMessage = (u: User) => `Are you sure you want to delete "${u.name || u.email}"?`
 const deleteBulkMessage = (n: number) => `Are you sure you want to delete ${n} users?`
@@ -54,6 +82,9 @@ const columns: TableColumn<User>[] = [
         <template #leading>
           <UDashboardSidebarCollapse />
         </template>
+        <template #right>
+          <UButton label="Create User" icon="i-lucide-plus" @click="openCreate" />
+        </template>
       </UDashboardNavbar>
     </template>
 
@@ -69,8 +100,12 @@ const columns: TableColumn<User>[] = [
         delete-title="Delete Users"
         :delete-single-message="deleteSingleMessage"
         :delete-bulk-message="deleteBulkMessage"
-        hide-delete-btn
+        show-edit-action
+        @row-click="viewUser"
+        @edit="openEdit"
+        @delete="handleDelete"
       />
+      <UserFormSlideover v-model:open="slideoverOpen" :user="editingUser" @saved="handleSaved" />
     </template>
   </UDashboardPanel>
 </template>
