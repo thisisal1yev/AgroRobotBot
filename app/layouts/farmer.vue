@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from "@nuxt/ui";
 
+useDashboard();
+
 const links = computed<NavigationMenuItem[][]>(() => [
   [
     { label: "Dashboard", icon: "i-lucide-layout-dashboard", to: "/farmer" },

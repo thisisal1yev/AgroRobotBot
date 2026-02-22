@@ -7,16 +7,9 @@ const open = defineModel<boolean>("open", { default: false });
 </script>
 
 <template>
-  <USlideover v-model:open="open">
-    <template #header>
-      <h3 class="text-lg font-semibold">
-        {{ title }}
-      </h3>
-    </template>
-
+  <USlideover v-model:open="open" :title="title">
     <template #body>
       <slot />
     </template>
   </USlideover>
 </template>
-

@@ -49,7 +49,7 @@ const sections = [
     </template>
 
     <template #body>
-      <div class="max-w-2xl space-y-4">
+      <div class="grid-cols-2 grid gap-x-5 gap-y-3">
         <UCard v-for="section in sections" :key="section.title">
           <div class="flex items-start gap-3">
             <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
