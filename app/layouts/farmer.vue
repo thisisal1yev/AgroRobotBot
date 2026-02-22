@@ -8,6 +8,7 @@ const links = computed<NavigationMenuItem[][]>(() => [
     { label: "Fields", icon: "i-lucide-map", to: "/farmer/fields" },
     { label: "Seasons", icon: "i-lucide-calendar", to: "/farmer/seasons" },
     { label: "Predictions", icon: "i-lucide-brain", to: "/farmer/predictions" },
+    { label: "Alerts", icon: "i-lucide-bell", to: "/farmer/alerts" },
   ],
   [
     { label: "Settings", icon: "i-lucide-settings", to: "/farmer/settings" },
@@ -21,6 +22,7 @@ const hotkeys = [
   { keys: "G - M", action: "Fields" },
   { keys: "G - S", action: "Seasons" },
   { keys: "G - P", action: "Predictions" },
+  { keys: "G - A", action: "Alerts" },
 ];
 </script>
 
