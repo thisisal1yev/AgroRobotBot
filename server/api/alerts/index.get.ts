@@ -1,4 +1,5 @@
 import { prisma } from "~~/prisma/db";
+import { Role } from "~~/shared/roles";
 
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event);
@@ -16,7 +17,7 @@ export default defineEventHandler(async (event) => {
     where.status = status;
   }
 
-  if (user.role !== "ADMIN") {
+  if (user.role !== Role.ADMIN) {
     where.field = { farm: { is: { ownerId: getUserIdNumber(user) } } };
   }
 

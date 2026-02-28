@@ -17,7 +17,7 @@ const NuxtLink = resolveComponent('NuxtLink')
       <div class="flex items-center justify-between">
         <div>
           <p class="text-sm text-muted">{{ label }}</p>
-          <div class="text-3xl font-bold text-highlighted mt-1">{{ value }}</div>
+          <h4 class="text-xl font-bold text-highlighted mt-1">{{ value }}</h4>
         </div>
         <div :class="['flex size-12 items-center justify-center rounded-xl', bg]">
           <UIcon :name="icon" :class="['size-6', color]" />

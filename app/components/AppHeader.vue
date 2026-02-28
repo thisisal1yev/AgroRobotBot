@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { LANDING_NAV } from "~/constants/navigation";
+import { Role } from "~/constants/roles";
 
 const colorMode = useColorMode();
 const { loggedIn, user } = useUserSession();
 
 const dashboardLink = computed(() =>
-  user.value?.role === "ADMIN" ? "/admin" : "/farmer",
+  user.value?.role === Role.ADMIN ? "/admin" : "/farmer",
 );
 
 const navItems = computed(() =>

@@ -5,6 +5,7 @@ import type {
   FormSubmitEvent,
   ButtonProps,
 } from "@nuxt/ui";
+import { Role } from "~/constants/roles";
 
 definePageMeta({
   layout: "auth",
@@ -19,7 +20,7 @@ const error = ref<string | null>(null);
 
 watchEffect(() => {
   if (loggedIn.value && user.value) {
-    const base = user.value.role === "ADMIN" ? "/admin" : "/farmer";
+    const base = user.value.role === Role.ADMIN ? "/admin" : "/farmer";
     navigateTo(base);
   }
 });

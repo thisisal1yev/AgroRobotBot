@@ -1,4 +1,5 @@
 import { prisma } from "~~/prisma/db";
+import type { SafeUserWithRelations } from "../../../utils/sanitize";
 
 export default defineEventHandler(async (event) => {
   await requireAdmin(event);
@@ -46,5 +47,5 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, message: "User not found" });
   }
 
-  return user;
+  return user as unknown as SafeUserWithRelations;
 });

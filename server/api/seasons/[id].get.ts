@@ -1,4 +1,5 @@
 import { prisma } from "~~/prisma/db";
+import { Role } from "~~/shared/roles";
 
 export default defineEventHandler(async (event) => {
   const user = await requireAuth(event);
@@ -15,7 +16,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, message: "Season not found" });
   }
 
-  if (user.role !== "ADMIN" && season.farm.ownerId !== getUserIdNumber(user)) {
+  if (user.role !== Role.ADMIN && season.farm.ownerId !== getUserIdNumber(user)) {
     throw createError({ statusCode: 403, message: "Access denied" });
   }
 

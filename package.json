@@ -14,32 +14,30 @@
     "lint": "eslint . --max-warnings 0"
   },
   "dependencies": {
-    "@iconify-json/lucide": "^1.2.92",
+    "@iconify-json/lucide": "^1.2.94",
     "@nuxt/fonts": "0.13.0",
     "@nuxt/icon": "2.2.1",
     "@nuxt/image": "2.0.0",
     "@nuxt/ui": "4.4.0",
-    "@prisma/adapter-pg": "^7.4.1",
-    "@prisma/client": "^7.4.1",
-    "@tailwindcss/vite": "^4.2.0",
-    "argon2": "^0.44.0",
+    "@prisma/adapter-pg": "^7.4.2",
+    "@prisma/client": "^7.4.2",
+    "@tailwindcss/vite": "^4.2.1",
     "bcrypt": "^6.0.0",
     "nuxt": "^4.3.1",
     "nuxt-auth-utils": "0.5.28",
-    "tailwindcss": "^4.2.0",
-    "vue": "^3.5.28",
+    "tailwindcss": "^4.2.1",
+    "vue": "^3.5.29",
     "vue-router": "^4.6.4"
   },
   "devDependencies": {
-    "@nuxt/eslint-config": "^1.15.0",
-    "@types/argon2": "^0.15.4",
+    "@nuxt/eslint-config": "^1.15.2",
     "@types/bcrypt": "^6.0.0",
-    "@types/node": "^25.3.0",
+    "@types/node": "^25.3.2",
     "dotenv": "^17.3.1",
-    "eslint": "^9.39.0",
-    "prisma": "^7.4.1",
+    "eslint": "^9.39.3",
+    "prisma": "^7.4.2",
     "tsx": "^4.21.0",
-    "typescript": "~5.6",
-    "vue-tsc": "~2.0"
+    "typescript": "~5.6.3",
+    "vue-tsc": "~2.0.29"
   }
 }

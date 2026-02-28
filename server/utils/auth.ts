@@ -1,4 +1,5 @@
 import type { H3Event } from "h3";
+import { Role } from "~~/shared/roles";
 
 export async function requireAuth(event: H3Event) {
   const session = await getUserSession(event);
@@ -13,7 +14,7 @@ export async function requireAuth(event: H3Event) {
 export async function requireAdmin(event: H3Event) {
   const user = await requireAuth(event);
 
-  if (user.role !== "ADMIN") {
+  if (user.role !== Role.ADMIN) {
     throw createError({ statusCode: 403, message: "Admin access required" });
   }
 
@@ -23,7 +24,7 @@ export async function requireAdmin(event: H3Event) {
 export async function requireOwnerOrAdmin(event: H3Event, ownerId: number) {
   const user = await requireAuth(event);
 
-  if (user.role !== "ADMIN" && user.id !== ownerId) {
+  if (user.role !== Role.ADMIN && user.id !== ownerId) {
     throw createError({ statusCode: 403, message: "Access denied" });
   }
 

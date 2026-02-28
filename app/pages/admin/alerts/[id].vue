@@ -79,7 +79,6 @@ const { data: alert, status } = await useFetch(`/api/alerts/${alertId}`, {
               v-if="alert.resolvedAt"
               color="success"
               variant="subtle"
-              size="xs"
               :label="`Resolved ${formatDate(alert.resolvedAt)}`"
               class="ml-2"
             />

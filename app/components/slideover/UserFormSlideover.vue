@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Role, getRoleLabel, type UserRole } from "~/constants/roles";
+
 const props = defineProps<{
   user?: {
     id: number;
@@ -20,12 +22,12 @@ const formState = reactive({
   name: "",
   email: "",
   password: "",
-  role: "FARMER",
+  role: Role.FARMER as UserRole,
 });
 
 const roleOptions = [
-  { label: "Farmer", value: "FARMER" },
-  { label: "Admin", value: "ADMIN" },
+  { label: getRoleLabel(Role.FARMER), value: Role.FARMER },
+  { label: getRoleLabel(Role.ADMIN), value: Role.ADMIN },
 ];
 
 watch(open, (val) => {
@@ -33,7 +35,7 @@ watch(open, (val) => {
     formState.name = props.user?.name || "";
     formState.email = props.user?.email || "";
     formState.password = "";
-    formState.role = props.user?.role || "FARMER";
+    formState.role = (props.user?.role as UserRole) || Role.FARMER;
   }
 });
 

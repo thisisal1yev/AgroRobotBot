@@ -15,6 +15,26 @@ type Analysis = NonNullable<typeof analyses.value>[number]
 const deleteSingleMessage = (_analysis: Analysis) => `Are you sure you want to delete this analysis?`
 const deleteBulkMessage = (n: number) => `Are you sure you want to delete ${n} analyses?`
 
+function viewPrediction(analysis: Analysis) {
+  navigateTo(`/farmer/predictions/${analysis.id}`)
+}
+
+function getAnalysisName(analysis: Analysis): string {
+  const parts = [
+    analysis.field?.farm?.name,
+    analysis.field?.name,
+    analysis.healthy ? 'Healthy' : (analysis.disease || 'Disease detected')
+  ].filter(Boolean)
+  return parts.join(' - ')
+}
+
+const analysesWithName = computed(() => {
+  return (analyses.value ?? []).map(analysis => ({
+    ...analysis,
+    name: getAnalysisName(analysis)
+  }))
+})
+
 const columns: TableColumn<Analysis>[] = [
   {
     id: 'result',
@@ -61,7 +81,7 @@ const columns: TableColumn<Analysis>[] = [
 
     <template #body>
       <DataTable
-        :data="analyses ?? []"
+        :data="analysesWithName"
         :columns="columns"
         :loading="status === 'pending'"
         :searchable="false"
@@ -71,6 +91,8 @@ const columns: TableColumn<Analysis>[] = [
         :delete-single-message="deleteSingleMessage"
         :delete-bulk-message="deleteBulkMessage"
         hide-delete-btn
+        name-key="name"
+        @row-click="viewPrediction"
       />
     </template>
   </UDashboardPanel>

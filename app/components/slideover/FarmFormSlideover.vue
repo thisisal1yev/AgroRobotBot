@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Role } from "~/constants/roles";
+
 const props = defineProps<{
   farm?: {
     id: number;
@@ -18,7 +20,7 @@ const { user } = useUserSession();
 const loading = ref(false);
 
 const isEditing = computed(() => !!props.farm);
-const isAdmin = computed(() => user.value?.role === "ADMIN");
+const isAdmin = computed(() => user.value?.role === Role.ADMIN);
 
 const { data: users, refresh: refreshUsers } = useFetch("/api/admin/users", {
   server: false,

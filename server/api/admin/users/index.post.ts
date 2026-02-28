@@ -1,5 +1,7 @@
 import { hashSync } from "bcrypt";
 import { prisma } from "~~/prisma/db";
+import { Role, isValidRole } from "~~/shared/roles";
+import { sanitizeUser } from "~~/server/utils/sanitize";
 
 export default defineEventHandler(async (event) => {
   await requireAdmin(event);
@@ -18,7 +20,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, message: "A user with this email already exists" });
   }
 
-  if (body.role && !["FARMER", "ADMIN"].includes(body.role)) {
+  if (body.role && !isValidRole(body.role)) {
     throw createError({ statusCode: 400, message: "Role must be FARMER or ADMIN" });
   }
 
@@ -29,10 +31,9 @@ export default defineEventHandler(async (event) => {
       email: body.email,
       name: body.name || null,
       password,
-      role: body.role || "FARMER",
+      role: body.role || Role.FARMER,
     },
-    select: { id: true, email: true, name: true, role: true, createdAt: true },
   });
 
-  return user;
+  return sanitizeUser(user);
 });

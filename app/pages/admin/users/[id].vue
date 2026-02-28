@@ -13,9 +13,23 @@ const { data: user, status } = await useFetch(`/api/admin/users/${userId}`, {
   server: false,
 })
 
-type User = NonNullable<typeof user.value>
-type Farm = User['farms'][number]
-type Report = User['reports'][number]
+type Farm = {
+  id: number;
+  name: string;
+  location: string;
+  area: number;
+  soilType: string;
+  createdAt: string;
+  _count: { fields: number; robots: number };
+}
+
+type Report = {
+  id: number;
+  title: string;
+  type: string;
+  fileUrl: string | null;
+  generatedAt: string;
+}
 
 const farmColumns: TableColumn<Farm>[] = [
   { accessorKey: 'name', header: 'Name' },
@@ -73,13 +87,6 @@ const reportColumns: TableColumn<Report>[] = [
       <UDashboardNavbar :title="user?.name || user?.email || 'User'">
         <template #leading>
           <UDashboardSidebarCollapse />
-          <UButton
-            icon="i-lucide-arrow-left"
-            color="neutral"
-            variant="ghost"
-            to="/admin/users"
-            class="mr-2"
-          />
         </template>
       </UDashboardNavbar>
     </template>
@@ -113,7 +120,7 @@ const reportColumns: TableColumn<Report>[] = [
           />
           <StatCard
             label="Farms"
-            :value="user._count.farms"
+            :value="user._count?.farms ?? 0"
             icon="i-lucide-tractor"
             color="text-amber-500"
             bg="bg-amber-500/10"
@@ -133,7 +140,7 @@ const reportColumns: TableColumn<Report>[] = [
             <h4 class="font-semibold">Farms</h4>
           </template>
           <DataTable
-            :data="user.farms"
+            :data="user.farms ?? []"
             :columns="farmColumns"
             :searchable="false"
             empty-icon="i-lucide-tractor"
@@ -148,7 +155,7 @@ const reportColumns: TableColumn<Report>[] = [
             <h4 class="font-semibold">Recent Reports</h4>
           </template>
           <DataTable
-            :data="user.reports"
+            :data="user.reports ?? []"
             :columns="reportColumns"
             :searchable="false"
             name-key="title"

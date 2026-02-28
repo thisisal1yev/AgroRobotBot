@@ -1,4 +1,6 @@
 import { prisma } from "~~/prisma/db";
+import { isValidRole } from "~~/shared/roles";
+import { sanitizeUser } from "~~/server/utils/sanitize";
 
 export default defineEventHandler(async (event) => {
   await requireAdmin(event);
@@ -18,7 +20,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  if (body.role && !["FARMER", "ADMIN"].includes(body.role)) {
+  if (body.role && !isValidRole(body.role)) {
     throw createError({ statusCode: 400, message: "Role must be FARMER or ADMIN" });
   }
 
@@ -29,8 +31,7 @@ export default defineEventHandler(async (event) => {
       ...(body.name !== undefined && { name: body.name || null }),
       ...(body.role && { role: body.role }),
     },
-    select: { id: true, email: true, name: true, role: true, createdAt: true },
   });
 
-  return user;
+  return sanitizeUser(user);
 });

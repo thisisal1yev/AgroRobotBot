@@ -1,5 +1,6 @@
 import { compare } from "bcrypt";
 import { prisma } from "~~/prisma/db";
+import { sanitizeUser } from "~~/server/utils/sanitize";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
@@ -40,10 +41,5 @@ export default defineEventHandler(async (event) => {
     },
   });
 
-  return {
-    id: user.id,
-    email: user.email,
-    name: user.name,
-    role: user.role,
-  };
+  return sanitizeUser(user);
 });

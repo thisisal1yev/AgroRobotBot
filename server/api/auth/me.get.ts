@@ -1,4 +1,5 @@
 import { prisma } from "~~/prisma/db";
+import { sanitizeUser } from "~~/server/utils/sanitize";
 
 export default defineEventHandler(async (event) => {
   const session = await getUserSession(event);
@@ -12,13 +13,6 @@ export default defineEventHandler(async (event) => {
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: {
-      id: true,
-      email: true,
-      name: true,
-      role: true,
-      createdAt: true,
-    },
   });
 
   if (!user) {
@@ -28,5 +22,5 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  return user;
+  return sanitizeUser(user);
 });
