@@ -5,16 +5,16 @@
     "": {
       "name": "AgroRobotBot",
       "dependencies": {
-        "@iconify-json/lucide": "^1.2.96",
+        "@iconify-json/lucide": "^1.2.97",
         "@nuxt/fonts": "0.13.0",
         "@nuxt/icon": "2.2.1",
         "@nuxt/image": "2.0.0",
         "@nuxt/ui": "4.4.0",
-        "@prisma/adapter-pg": "^7.4.2",
-        "@prisma/client": "^7.4.2",
+        "@prisma/adapter-pg": "^7.5.0",
+        "@prisma/client": "^7.5.0",
         "@tailwindcss/vite": "^4.2.1",
         "bcrypt": "^6.0.0",
-        "nuxt": "^4.3.1",
+        "nuxt": "^4.4.2",
         "nuxt-auth-utils": "0.5.28",
         "tailwindcss": "^4.2.1",
         "vue": "^3.5.30",
@@ -23,10 +23,10 @@
       "devDependencies": {
         "@nuxt/eslint-config": "^1.15.2",
         "@types/bcrypt": "^6.0.0",
-        "@types/node": "^25.4.0",
+        "@types/node": "^25.5.0",
         "dotenv": "^17.3.1",
         "eslint": "^9.39.4",
-        "prisma": "^7.4.2",
+        "prisma": "^7.5.0",
         "tsx": "^4.21.0",
         "typescript": "~5.6.3",
         "vue-tsc": "~2.0.29",
@@ -1386,7 +1386,7 @@
 
     "is-core-module": ["is-core-module@2.16.1", "", { "dependencies": { "hasown": "^2.0.2" } }, "sha512-UfoeMA6fIJ8wTYFEUjelnaGI67v6+N7qXJEvQuIGa99l4xsCruSYOVSQ0uPANn4dAzm8lkYPaKLrrijLq7x23w=="],
 
-    "is-docker": ["is-docker@3.0.0", "", { "bin": { "is-docker": "cli.js" } }, "sha512-eljcgEDlEns/7AXFosB5K/2nCM4P7FQPkGc/DWLy5rmFEWvZayGrik1d9/QIY5nJ4f9YsVvBkA6kJpHn9rISdQ=="],
+    "is-docker": ["is-docker@2.2.1", "", { "bin": { "is-docker": "cli.js" } }, "sha512-F+i2BKsFrH66iaUFc0woD8sLy8getkwTwtOBjvs56Cx4CgJDeKQeqfz8wAYiSb8JOprWhHH5p77PbmYCvvUuXQ=="],
 
     "is-extglob": ["is-extglob@2.1.1", "", {}, "sha512-SbKbANkN603Vi4jEZv49LeVJMn4yGwsbzZworEoyEiutsN3nJYdbO36zfhGJ6QEDpOZIFkDtnq5JRxmvl3jsoQ=="],
 
@@ -2412,6 +2412,8 @@
 
     "impound/unplugin": ["unplugin@3.0.0", "", { "dependencies": { "@jridgewell/remapping": "^2.3.5", "picomatch": "^4.0.3", "webpack-virtual-modules": "^0.6.2" } }, "sha512-0Mqk3AT2TZCXWKdcoaufeXNukv2mTrEZExeXlHIOZXdqYoHHr4n51pymnwV8x2BOVxwXbK2HLlI7usrqMpycdg=="],
 
+    "is-inside-container/is-docker": ["is-docker@3.0.0", "", { "bin": { "is-docker": "cli.js" } }, "sha512-eljcgEDlEns/7AXFosB5K/2nCM4P7FQPkGc/DWLy5rmFEWvZayGrik1d9/QIY5nJ4f9YsVvBkA6kJpHn9rISdQ=="],
+
     "lazystream/readable-stream": ["readable-stream@2.3.8", "", { "dependencies": { "core-util-is": "~1.0.0", "inherits": "~2.0.3", "isarray": "~1.0.0", "process-nextick-args": "~2.0.0", "safe-buffer": "~5.1.1", "string_decoder": "~1.1.1", "util-deprecate": "~1.0.1" } }, "sha512-8p0AUk4XODgIewSi0l8Epjs+EVnWiK7NoDIEGU0HhE7+ZyY8D1IMY7odu5lRrFXGg71L15KG8QrPmum45RTtdA=="],
 
     "listhen/pathe": ["pathe@1.1.2", "", {}, "sha512-whLdWMYL2TwI08hn8/ZqAbrVemu0LNaNNJZX73O6qaIdCTfXutsLhMkjdENX0qhsQ9uIimo4/aQOmXkoon2nDQ=="],
@@ -2739,8 +2741,6 @@
     "reka-ui/@vueuse/shared/vue": ["vue@3.5.28", "", { "dependencies": { "@vue/compiler-dom": "3.5.28", "@vue/compiler-sfc": "3.5.28", "@vue/runtime-dom": "3.5.28", "@vue/server-renderer": "3.5.28", "@vue/shared": "3.5.28" }, "peerDependencies": { "typescript": "*" }, "optionalPeers": ["typescript"] }, "sha512-BRdrNfeoccSoIZeIhyPBfvWSLFP4q8J3u8Ju8Ug5vu3LdD+yTM13Sg4sKtljxozbnuMu1NB1X5HBHRYUzFocKg=="],
 
     "rollup-plugin-visualizer/open/define-lazy-prop": ["define-lazy-prop@2.0.0", "", {}, "sha512-Ds09qNh8yw3khSjiJjiUInaGX9xlqZDY7JVryGxdxV7NPeuqQfplOpQ66yJFZut3jLa5zOwkXw1g9EI2uKh4Og=="],
-
-    "rollup-plugin-visualizer/open/is-docker": ["is-docker@2.2.1", "", { "bin": { "is-docker": "cli.js" } }, "sha512-F+i2BKsFrH66iaUFc0woD8sLy8getkwTwtOBjvs56Cx4CgJDeKQeqfz8wAYiSb8JOprWhHH5p77PbmYCvvUuXQ=="],
 
     "rollup-plugin-visualizer/open/is-wsl": ["is-wsl@2.2.0", "", { "dependencies": { "is-docker": "^2.0.0" } }, "sha512-fKzAra0rGJUUBwGBgNkHZuToZcn+TtXHpeCgmkMJMMYx1sQDYaCSyjJBSCa2nH1DGm7s3n1oBnohoVTBaN7Lww=="],
 
